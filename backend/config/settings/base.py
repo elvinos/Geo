@@ -63,7 +63,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = True
 
 # DOMAINS
-# ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 # DOMAIN = env.str('DOMAIN')
 
 # EMAIL CONFIGURATION
