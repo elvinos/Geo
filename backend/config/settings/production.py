@@ -1,12 +1,12 @@
 import environ
 env = environ.Env()
 print("PRODUCTION SETTINGS")
-
+DEBUG=True
 # ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 DOMAIN = env.str('DOMAIN')
 
 from config.settings.base import *
-DEBUG= False
+# DEBUG= False
 ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', env.str('IP'), env.str('HOST_PROD'), 'backend']
 # ALLOWED_HOSTS = ['*']
 

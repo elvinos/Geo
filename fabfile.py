@@ -81,7 +81,7 @@ def deploy(c):
         host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
         host.run('''docker build -t %s backend''' % BACKEND_NAME.replace("_", "-"))
         host.run('''docker build -f nginx/Dockerfile  -t %s .''' % NGINX_NAME.replace("_", "-"))
-        host.run('''docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
+        host.run('''docker stack deploy -c docker-compose-prod.yml %s --with-registry-auth''' % APP_NAME.lower())
         while True:
             res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
             if not res.stdout.strip():
