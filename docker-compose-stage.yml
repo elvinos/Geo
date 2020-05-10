@@ -2,6 +2,7 @@ version: '3.3'
 
 services:
   backend:
+    image: 127.0.0.1:5000/geo-backend
     build:
       context: ./backend
     depends_on:
@@ -20,6 +21,7 @@ services:
       - backend_net
 
   nginx:
+    image: 127.0.0.1:5000/geo-nginx
     build:
       context: .
       dockerfile: nginx/Dockerfile
