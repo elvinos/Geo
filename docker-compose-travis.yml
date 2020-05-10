@@ -13,7 +13,7 @@ services:
     command: /gunicorn_stage.sh
     entrypoint: /entrypoint.sh
     restart: on-failure
-    env_file: .env.example
+    env_file: example.env
     ports:
      - "8080:8080"
     networks:
@@ -41,7 +41,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - backups:/var/lib/postgresql/backups/
-    env_file: .env.example
+    env_file: example.env
     networks:
       - backend_net
 
