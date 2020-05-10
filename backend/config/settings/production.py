@@ -3,7 +3,7 @@ env = environ.Env()
 print("PRODUCTION SETTINGS")
 
 # ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
-# DOMAIN = env.str('HOST_PROD')
+DOMAIN = env.str('DOMAIN')
 
 from config.settings.base import *
 DEBUG= False
