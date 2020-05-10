@@ -83,7 +83,7 @@ def deploy(c):
         host.run('''docker build -f nginx/Dockerfile  -t %s .''' % NGINX_NAME.replace("_", "-"))
         host.run('''docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
         while True:
-            res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
+            res = host.run('docker service ls | grep '+ BACKEND_NAME.replace("_", "-") +'.*0/')
             if not res.stdout.strip():
                 time.sleep(4)
                 break
