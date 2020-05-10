@@ -38,6 +38,8 @@ def install_instance(c):
         host.sudo('apt-get install -y docker-ce docker-ce-cli containerd.io')
         host.sudo('usermod -a -G docker $USER')
         host.sudo('systemctl restart docker')
+        host.sudo('curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose')
+        host.sudo('chmod +x /usr/local/bin/docker-compose')
         host.sudo('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
         host.sudo('docker swarm init')
         print('### KEY ######################################################################')
@@ -50,18 +52,13 @@ def install_instance(c):
         host.run('ssh-keyscan github.com >> ~/.ssh/known_hosts')
         host.run('mkdir ' + APP_NAME)
         host.sudo('chmod 666 /var/run/docker.sock')
+        host.sudo('docker service create --name registry --publish 5000:5000 registry:2')
         with host.cd(APP_NAME):
             host.run('git clone '+ GIT + ' .')
             host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
-            host.run('''docker build -t %s backend''' % BACKEND_NAME)
-            host.run('''docker build -f nginx/Dockerfile  -t %s .''' % NGINX_NAME)
-            host.run('''docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
-            while True:
-                res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
-                if not res.stdout.strip():
-                    time.sleep(4)
-                    break
-                time.sleep(2)
+            host.put('''docker-compose -c docker-compose-stage.yml build''')
+            host.put('''docker-compose -c docker-compose-stage.yml push''')
+            host.run('''docker stack deploy -c docker-compose-stage.yml %s''' % APP_NAME.lower())
             host.sudo('chmod +x backend/manage.py')
             host.run('''docker exec $(docker ps -q -f name=%s) python /backend/manage.py createsuperuser --noinput''' % BACKEND_NAME)
     else:
@@ -79,9 +76,9 @@ def deploy(c):
         host.run('git pull')
         host.run('git checkout master')
         host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
-        host.run('''docker build -t %s backend''' % BACKEND_NAME.replace("_", "-"))
-        host.run('''docker build -f nginx/Dockerfile  -t %s .''' % NGINX_NAME.replace("_", "-"))
-        host.run('''docker stack deploy -c docker-compose-prod.yml %s --with-registry-auth''' % APP_NAME.lower())
+        host.put('''docker-compose -c docker-compose-stage.yml build''')
+        host.put('''docker-compose -c docker-compose-stage.yml push''')
+        host.run('''docker stack deploy -c docker-compose-stage.yml %s''' % APP_NAME.lower())
         while True:
             res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
             if not res.stdout.strip():
