@@ -60,7 +60,7 @@ MIDDLEWARE = [
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
 SECRET_KEY = env.str('SECRET_KEY')
-DEBUG = False
+DEBUG = True
 
 # DOMAINS
 # ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
