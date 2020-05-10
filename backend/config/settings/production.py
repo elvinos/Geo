@@ -7,8 +7,8 @@ print("PRODUCTION SETTINGS")
 
 from config.settings.base import *
 DEBUG= False
-ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', env.str('IP'), env.str('HOST_PROD')]
-
+# ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', 'localhost', env.str('IP'), env.str('HOST_PROD')]
+ALLOWED_HOSTS = ['*']
 
 # import django_heroku
 # INSTALLED_APPS.extend(["whitenoise.runserver_nostatic"])

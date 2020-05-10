@@ -7,7 +7,7 @@ import os
 
 load_dotenv()
 
-HOST = os.getenv('HOST_PROD')
+HOST = os.getenv('IP')
 KEY_FILE = os.getenv('KEY_FILE')
 DEFAULT_LOGIN = os.getenv('DEFAULT_LOGIN')
 DEFAULT_PASS = os.getenv('DEFAULT_PASS')
@@ -20,8 +20,8 @@ DB_NAME = os.getenv('DB_NAME')
 DOCKER_PASS = os.getenv('DOCKER_PASS')
 DOCKER_USER = os.getenv('DOCKER_USER')
 
-host = Connection(host=HOST, 
-                  user='ubuntu', 
+host = Connection(host=str(HOST),
+                  user='ubuntu',
                   port=22, 
                   connect_kwargs={"key_filename":[KEY_FILE]})
 
