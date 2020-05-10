@@ -3,7 +3,7 @@ env = environ.Env()
 print("PRODUCTION SETTINGS")
 DEBUG=True
 # ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
-# DOMAIN = env.str('DOMAIN')
+DOMAIN = env.str('http://localhost:8080')
 
 from config.settings.base import *
 # DEBUG= False

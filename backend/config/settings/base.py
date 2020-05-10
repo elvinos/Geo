@@ -12,12 +12,12 @@ ROOT_DIR = environ.Path(__file__) - 3
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
-if READ_DOT_ENV_FILE:
-    env_file = str(ROOT_DIR.path('.env'))
-    print('Loading : {}'.format(env_file))
-    env.read_env(env_file)
-    print('The .env file has been loaded. See base.py for more information')
+# READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
+# if READ_DOT_ENV_FILE:
+#     env_file = str(ROOT_DIR.path('.env'))
+#     print('Loading : {}'.format(env_file))
+#     env.read_env(env_file)
+#     print('The .env file has been loaded. See base.py for more information')
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
