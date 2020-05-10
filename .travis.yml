@@ -1,0 +1,21 @@
+dist: bionic
+language: python
+python:
+- 3.7
+env:
+  - SERVER_IP_ADDRESS=35.176.210.24
+services:
+- docker
+install:
+- pip install -r backend/requirements.txt
+before_script:
+- docker-compose -f docker-compose-stage.yml build
+before_install:
+- openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
+  -in deploy_key.enc -out ./deploy_key -d
+- eval "$(ssh-agent -s)"
+- chmod 600 ./deploy_key
+- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al /bin/sh
+script:
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then sh ./deploy.sh; fi
