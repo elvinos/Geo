@@ -17,6 +17,8 @@ APP_NAME = os.getenv('APP_NAME')
 BACKEND_NAME = os.getenv('BACKEND_NAME')
 NGINX_NAME = os.getenv('NGINX_NAME')
 DB_NAME = os.getenv('DB_NAME')
+DOCKER_PASS = os.getenv('DOCKER_PASS')
+DOCKER_USER = os.getenv('DOCKER_USER')
 
 host = Connection(host=HOST, 
                   user='ubuntu', 
@@ -36,6 +38,7 @@ def install_instance(c):
         host.sudo('apt-get install -y docker-ce docker-ce-cli containerd.io')
         host.sudo('usermod -a -G docker $USER')
         host.sudo('systemctl restart docker')
+        host.sudo('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
         host.sudo('docker swarm init')
         print('### KEY ######################################################################')
         host.run('ssh-keygen -t rsa -C "' + DEFAULT_LOGIN + '" -f ~/.ssh/id_rsa -q -N ""')
@@ -51,7 +54,7 @@ def install_instance(c):
             host.run('git clone '+ GIT + ' .')
             host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
             host.run('''docker build -t %s backend''' % BACKEND_NAME)
-            host.run('''docker build -f nginx/Dockerfile  -t %s-nginx .''' % NGINX_NAME)
+            host.run('''docker build -f nginx/Dockerfile  -t %s .''' % NGINX_NAME)
             host.run('''docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
             while True:
                 res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
@@ -71,12 +74,13 @@ def set_pass(c):
 
 @task
 def deploy(c):
+    host.run('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
         host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
-        host.run('''docker build -t %s backend''' % BACKEND_NAME)
-        host.run('''docker build -f nginx/Dockerfile  -t %s-nginx .''' % NGINX_NAME)
+        host.run('''docker build -t %s backend''' % BACKEND_NAME.replace("_", "-"))
+        host.run('''docker build -f nginx/Dockerfile  -t %s .''' % NGINX_NAME.replace("_", "-"))
         host.run('''docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
         while True:
             res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
