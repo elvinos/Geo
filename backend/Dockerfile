@@ -16,6 +16,6 @@ RUN pip install -r ./requirements.txt
 #EXPOSE 8000
 
 # upload scripts
-COPY ./scripts/entrypoint.sh ./scripts/dev_start.sh ./scripts/gunicorn.sh /
+COPY ./scripts/entrypoint.sh ./scripts/dev_start.sh ./scripts/gunicorn.sh ./scripts/gunicorn_stage.sh /
 
 WORKDIR /backend/

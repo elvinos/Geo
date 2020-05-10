@@ -8,8 +8,8 @@ services:
 - docker
 install:
 - pip install -r backend/requirements.txt
-before_script:
-- docker-compose -f docker-compose-stage.yml build
+#before_script:
+- docker-compose -f docker-compose-travis.yml build
 before_install:
 - openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
   -in deploy_key.enc -out ./deploy_key -d
