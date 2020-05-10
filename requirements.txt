@@ -1,2 +1,2 @@
 farbic2
-dotenv
+python-dotenv

@@ -84,3 +84,4 @@ venv
 /deploy_key
 .env
 /frontend/yarn.lock
+deploy_key

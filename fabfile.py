@@ -15,6 +15,7 @@ DEFAULT_USER = os.getenv('DEFAULT_USER')
 GIT = os.getenv('GIT')
 APP_NAME = os.getenv('APP_NAME')
 BACKEND_NAME = os.getenv('BACKEND_NAME')
+NGINX_NAME = os.getenv('NGINX_NAME')
 DB_NAME = os.getenv('DB_NAME')
 
 host = Connection(host=HOST, 
@@ -48,11 +49,10 @@ def install_instance(c):
         host.sudo('chmod 666 /var/run/docker.sock')
         with host.cd(APP_NAME):
             host.run('git clone '+ GIT + ' .')
-            host.put(".env", "/home/ubuntu/.env")
-            host.put(".env", "/home/ubuntu/"+APP_NAME+"/.env")
-            host.run('docker build -t '+APP_NAME+'-backend backend')
-            host.run('docker build -f nginx/Dockerfile  -t '+APP_NAME+'-nginx .')
-            host.run('docker stack deploy -c docker-compose-prod.yml' + APP_NAME)
+            host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
+            host.run('''docker build -t %s backend''' % BACKEND_NAME)
+            host.run('''docker build -f nginx/Dockerfile  -t %s-nginx .''' % NGINX_NAME)
+            host.run('''docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
             while True:
                 res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
                 if not res.stdout.strip():
@@ -74,11 +74,10 @@ def deploy(c):
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
-        host.put(".env", "/home/ubuntu/.env")
-       host.put(".env", "/home/ubuntu/"+APP_NAME+"/.env")
-        host.run('docker build -t '+APP_NAME+'-backend backend')
-        host.run('docker build -f nginx/Dockerfile  -t '+APP_NAME+'-nginx .')
-        host.run('docker stack deploy -c docker-compose-prod.yml' + APP_NAME)
+        host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
+        host.run('''docker build -t %s backend''' % BACKEND_NAME)
+        host.run('''docker build -f nginx/Dockerfile  -t %s-nginx .''' % NGINX_NAME)
+        host.run('''docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
         while True:
             res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
             if not res.stdout.strip():
