@@ -71,23 +71,15 @@ def set_pass(c):
 
 @task
 def deploy(c):
-    host.run('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
+#     host.run('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
         host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
-        host.put('''docker-compose -c docker-compose-stage.yml build''')
-        host.put('''docker-compose -c docker-compose-stage.yml push''')
-        host.run('''docker stack deploy -c docker-compose-stage.yml %s''' % APP_NAME.lower())
-        while True:
-            res = host.run('docker service ls | grep '+ BACKEND_NAME +'.*0/')
-            if not res.stdout.strip():
-                time.sleep(4)
-                break
-            time.sleep(2)
-        host.sudo('chmod +x backend/manage.py')
-        host.run('''docker exec $(docker ps -q -f name=%s) python /backend/manage.py createsuperuser --noinput''' % BACKEND_NAME)
-        host.run('docker service update ' + BACKEND_NAME)
+        host.run('''sudo docker-compose -f docker-compose-prod.yml build''')
+        host.run('''sudo docker-compose -f docker-compose-prod.yml push''')
+        host.run('''sudo docker stack deploy -c docker-compose-stage.yml %s''' % APP_NAME.lower())
+
 
 @task
 def pgdump(c):

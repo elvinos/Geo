@@ -1,0 +1,56 @@
+version: '3.3'
+
+services:
+  nginx:
+    image: geo-nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - static_volume:/staticfiles
+      - media_volume:/mediafiles
+    networks:
+      - backend_net
+
+  backend:
+    image: geo-backend:latest
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/backend/
+      - static_volume:/backend/staticfiles
+      - media_volume:/backend/mediafiles
+    command: /gunicorn.sh
+    entrypoint: /entrypoint.sh
+    env_file: .env
+    networks:
+      - backend_net
+
+  postgres:
+    image: postgres:12-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - backups:/var/lib/postgresql/backups/
+    env_file: .env
+    networks:
+      - backend_net
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  backups:
+  redisdata:
+
+networks:
+  backend_net:
