@@ -78,7 +78,7 @@ def deploy(c):
         host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
         host.run('''sudo docker-compose -f docker-compose-prod.yml build''')
         host.run('''sudo docker-compose -f docker-compose-prod.yml push''')
-        host.run('''sudo docker stack deploy -c docker-compose-stage.yml %s''' % APP_NAME.lower())
+        host.run('''sudo docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
 
 
 @task
