@@ -22,6 +22,5 @@ ssh -i ./deploy_key -t -t $USER@$SERVER_IP_ADDRESS << EOF
   $BUILD
   $PUSH
   $STACK_DEPLOY
+  exit
 EOF
-
-exit 0

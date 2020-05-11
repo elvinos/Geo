@@ -83,8 +83,8 @@ def deploy(c):
 
 @task
 def pgdump(c):
-    cid = host.run('docker container ls | grep ' + DB_NAME +' | head -c 12').stdout.strip()
-    host.run('''docker container exec %s sh -c "pg_dump -U %s %s | gzip > '/var/lib/postgresql/backups/%s.gz'"'''  % (cid, DB_NAME.lower(), APP_NAME.lower(), APP_NAME.lower()))
+    cid = host.run('docker container ls | grep ' + APP_NAME.lower()  +'_postgres | head -c 12').stdout.strip()
+    host.run('''docker container exec %s sh -c "pg_dump -U %s %s | gzip > '/var/lib/postgresql/backups/%s.gz'"'''  % (cid, DB_NAME, APP_NAME.lower(), APP_NAME.lower()))
     host.run('docker cp %s:/var/lib/postgresql/backups/%s.gz /tmp/%s.gz' % (cid, APP_NAME.lower(), APP_NAME.lower()))
     t = Transfer(host)
     t.get('/tmp/&s.gz' % APP_NAME)
