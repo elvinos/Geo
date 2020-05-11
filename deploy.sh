@@ -16,7 +16,7 @@ STACK_DEPLOY="sudo docker stack deploy -c docker-compose-prod.yml $APP_NAME"
 #ssh -i ./deploy_key $USER@$SERVER_IP_ADDRESS pwd
 
 ssh -i ./deploy_key -t -t $USER@$SERVER_IP_ADDRESS << EOF
-  cd $APP_NAME
+  cd Geo
   $PULL
   $CHECKOUT
   $BUILD
