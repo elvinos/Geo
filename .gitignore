@@ -85,3 +85,7 @@ venv
 .env
 /frontend/yarn.lock
 deploy_key
+
+*.gz
+
+Geo_db

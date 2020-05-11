@@ -17,8 +17,9 @@ APP_NAME = os.getenv('APP_NAME')
 BACKEND_NAME = os.getenv('BACKEND_NAME')
 NGINX_NAME = os.getenv('NGINX_NAME')
 DB_NAME = os.getenv('DB_NAME')
-DOCKER_PASS = os.getenv('DOCKER_PASS')
-DOCKER_USER = os.getenv('DOCKER_USER')
+DB_USER = os.getenv('POSTGRES_USER')
+DB_DB = os.getenv('POSTGRES_DB')
+
 
 host = Connection(host=str(HOST),
                   user='ubuntu',
@@ -60,14 +61,13 @@ def install_instance(c):
             host.put('''docker-compose -c docker-compose-stage.yml push''')
             host.run('''docker stack deploy -c docker-compose-stage.yml %s''' % APP_NAME.lower())
             host.sudo('chmod +x backend/manage.py')
-            host.run('''docker exec $(docker ps -q -f name=%s) python /backend/manage.py createsuperuser --noinput''' % BACKEND_NAME)
+            host.run('''docker exec $(docker ps -q -f name=%s) python /manage.py createsuperuser --noinput''' % BACKEND_NAME)
     else:
         print('Docker already installed.')
         
 @task
 def set_pass(c):
-    host.sudo('chmod +x backend/manage.py')
-    host.run('''docker exec $(docker ps -q -f name=%s) python /backend/manage.py createsuperuser --noinput''' % BACKEND_NAME)
+      host.run('''docker exec $(docker ps -q -f name=%s) python manage.py createsuperuser --noinput''' % BACKEND_NAME)
 
 @task
 def deploy(c):
@@ -84,10 +84,10 @@ def deploy(c):
 @task
 def pgdump(c):
     cid = host.run('docker container ls | grep ' + APP_NAME.lower()  +'_postgres | head -c 12').stdout.strip()
-    host.run('''docker container exec %s sh -c "pg_dump -U %s %s | gzip > '/var/lib/postgresql/backups/%s.gz'"'''  % (cid, DB_NAME, APP_NAME.lower(), APP_NAME.lower()))
-    host.run('docker cp %s:/var/lib/postgresql/backups/%s.gz /tmp/%s.gz' % (cid, APP_NAME.lower(), APP_NAME.lower()))
+    host.run('''docker container exec %s sh -c "pg_dump -U %s %s | gzip > '/var/lib/postgresql/backups/%s.gz'"'''  % (cid, DB_USER, DB_DB, DB_DB))
+    host.run('docker cp %s:/var/lib/postgresql/backups/%s.gz /tmp/%s.gz' % (cid, DB_DB, DB_DB))
     t = Transfer(host)
-    t.get('/tmp/&s.gz' % APP_NAME)
+    t.get('/tmp/%s.gz' % DB_NAME)
 
 @task
 def test(c):
