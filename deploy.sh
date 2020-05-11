@@ -5,7 +5,7 @@ set -ev
 # these could all be environment variables:
 USER="ubuntu"
 SSH="ssh $USER@$SERVER_IP_ADDRESS"
-APP_NAME=Geo
+APP_NAME=geo
 
 PULL="git pull"
 CHECKOUT="git checkout master"
