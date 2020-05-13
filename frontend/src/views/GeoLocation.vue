@@ -45,7 +45,7 @@
                                         <label>File
                                             <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
                                         </label>
-                                        <button v-on:click="submitFile()">Submit</button>
+                                        <base-button type="primary" v-on:click="submitFile()">Submit</base-button>
                                     </div>
                                     <b-form-textarea
                                             id="textarea"

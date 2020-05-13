@@ -34,6 +34,10 @@ Vue.config.productionTip = false;
 Vue.use(Argon);
 window.vm = {}
 new Vue({
+  el: '#app',
+  components: {
+    'django': App                                    // add this
+  },
   router,
   render: h => h(App)
 }).$mount("#app");
