@@ -19,18 +19,20 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import Argon from "./plugins/argon-kit";
-import './registerServiceWorker'
+import './registerServiceWorker';
+import VueTabulator from 'vue-tabulator';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+
 // Install BootstrapVue
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
-// import 'bootstrap/dist/css/bootstrap.css'
-// import 'bootstrap-vue/dist/bootstrap-vue.css'
-// import './custom.scss'
+
+Vue.use(VueTabulator);
 
 Vue.config.productionTip = false;
 Vue.use(Argon);
+window.vm = {}
 new Vue({
   router,
   render: h => h(App)

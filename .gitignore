@@ -89,3 +89,4 @@ deploy_key
 *.gz
 
 Geo_db
+/TestData/

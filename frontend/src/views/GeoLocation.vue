@@ -41,6 +41,12 @@
                                         tellus mattis enim, id dapibus odio dui ac tellus. Proin odio ante, dignissim a
                                         velit at, interdum dictum quam.
                                     </p>
+                                    <div class="large-12 medium-12 small-12 cell">
+                                        <label>File
+                                            <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+                                        </label>
+                                        <button v-on:click="submitFile()">Submit</button>
+                                    </div>
                                     <b-form-textarea
                                             id="textarea"
                                             v-model="text"
@@ -50,8 +56,18 @@
                                     ></b-form-textarea>
 
                                     <pre class="mt-3 mb-0">{{ text }}</pre>
-                                    <base-button type="primary" @click="sendLocationRequest()">Get Location</base-button>
+                                    <base-button type="primary" @click="sendLocationRequest(this.text)">Get Location
+                                    </base-button>
                                 </div>
+                                <div class="d-flex justify-content-around wrapper-jexcel" id="spread">
+                                    <div id="spreadsheet" ref="spreadsheet"></div>
+                                </div>
+                                <VueTabulator v-model="tdata" :options="options"
+                                              :integration="{ updateStrategy: 'REPLACE`' }"/>
+                                <base-button type="primary" @click="runBatchSearch()">Search
+                                </base-button>
+                                <base-button type="primary" @click="addRow()">Add Row
+                                </base-button>
                             </div>
                         </div>
                     </div>
@@ -66,35 +82,136 @@
 <script>
     import axios from 'axios';
 
+    let tableData = [
+        {id: 1, search: "", lat: "", lon: ""},
+        {id: 2, search: "", lat: "", lon: ""},
+        {id: 3, search: "", lat: "", lon: ""},
+        {id: 4, search: "", lat: "", lon: ""},
+        {id: 5, search: "", lat: "", lon: ""},
+
+    ]
+
     // const token = '40abc2724e8a87'
     // const token =  "d6a28a58bb22cbf5c3a2d2917f178e62"
     // https://locationiq.org/v1/search.php?key=40abc2724e8a87&q=Statue%20of%20Liberty&format=json
 
     let token = process.env.VUE_APP_LIQ_TOKEN
 
+    import {TabulatorComponent} from "vue-tabulator";
+
     export default {
+        components: {
+            'AwesomeLocalTable': TabulatorComponent
+        },
         data() {
             return {
-                text: ''
+                file: '',
+                text: '',
+                tdata: tableData,
+                options: {
+                    height: "311px",
+                    layout: "fitColumns",
+                    columns: [
+                        {title: "Search Address", field: "search", editor: true},
+                        {title: "Latitude", field: "lat", editor: true},
+                        {title: "Longitude", field: "lon", editor: true}
+                    ],
+                }
             }
         },
         methods: {
-            sendLocationRequest() {
-                let string = 'https://locationiq.org/v1/search.php?key='+token+'&q='+ this.text + '&format=json'
+            stringBuilder(search) {
+                return 'https://locationiq.org/v1/search.php?key=' + token + '&q=' + search + '&format=json'
                 console.log(string)
-                axios
+            },
+            handleFileUpload() {
+                this.file = this.$refs.file.files[0];
+            },
+            submitFile() {
+                /*
+                        Initialize the form data
+                    */
+                let formData = new FormData();
+
+                /*
+                    Add the form data we need to submit
+                */
+                formData.append('file', this.file);
+
+                /*
+                  Make the request to the POST /single-file URL
+                */
+                axios.post('/single-file',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                ).then(function () {
+                    console.log('SUCCESS!!');
+                })
+                    .catch(function () {
+                        console.log('FAILURE!!');
+                    });
+            },
+
+
+            async sendLocationRequest(search) {
+                let string = 'https://locationiq.org/v1/search.php?key=' + token + '&q=' + search + '&format=json'
+                console.log(string)
+                await axios
                     .get(string)
 
                     .then(response => {
                         // this.text = response.lat
                         console.log(response)
+                        return response.data
                     })
                     .catch(error => {
                         console.log(error)
                         // this.errored = true
                     })
+            },
+            getSearch() {
+                let searches = []
+                for (let i = 0; i < this.tdata.length; i++) {
+                    let item = this.tdata[i];
+                    if (item.search !== '') {
+                        searches.push(item.search);
+                    }
+                }
+                console.log(searches)
+                return searches
+            },
+            runBatchSearch() {
+                this.batchSearch(this.getSearch())
+            },
+            batchSearch(searches) {
+                for (let i = 0; i < searches.length; i++) {
+                    axios.get(this.stringBuilder(searches[i])).then(result => {
+                            console.log(result.data);
+                            let latlon = this.getLongLat(result.data);
+                            console.log(latlon);
+                            // this.tdata[i] = {id: i, search: searches[i], lat: latlon[0], lon: latlon[1]};
+                            this.$set(this.tdata, i, {id: i, search: searches[i], lat: latlon[0], lon: latlon[1]});
+                        }
+                    )
+
+                }
+            },
+            getLongLat(searchResult) {
+                let topRes = searchResult[0];
+                return [topRes.lat, topRes.lon];
+            },
+            addRow() {
+                this.$set(this.tdata, this.tdata.length, {id: this.tdata.length, search: "", lat: "", lon: ""});
+
             }
-        }
+        },
+        created() {
+            vm.component = this
+        },
     }
 </script>
 <style>
