@@ -159,7 +159,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': STATICFILES_DIRS,
+#         'DIRS': STATICFILES_DIRS,
+        'DIRS': [ROOT_DIR],
         'OPTIONS': {
             'debug': DEBUG,
             'loaders': [
@@ -213,7 +214,7 @@ AUTH_USER_MODEL = 'users.User'
 # DJANGO REST FRAMEWORK
 # ------------------------------------------------------------------------------
 REST_FRAMEWORK = {
-    'UPLOADED_FILES_USE_URL': False,
+#     'UPLOADED_FILES_USE_URL': False,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication'
@@ -223,9 +224,12 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
-        'rest_framework.parsers.FileUploadParser'
+#         'rest_framework.parsers.FileUploadParser'
     ]
 }
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240 # higher than the count of fields
+
 
 # raven sentry client
 # See https://docs.sentry.io/clients/python/integrations/django/

@@ -121,8 +121,8 @@
         },
         methods: {
             stringBuilder(search) {
-                return 'https://locationiq.org/v1/search.php?key=' + token + '&q=' + search + '&format=json'
                 console.log(string)
+                return 'https://locationiq.org/v1/search.php?key=' + token + '&q=' + search + '&format=json'
             },
             handleFileUpload() {
                 this.file = this.$refs.file.files[0];
@@ -141,15 +141,16 @@
                 /*
                   Make the request to the POST /single-file URL
                 */
-                axios.post('/single-file',
+                axios.post('/api/files/',
                     formData,
                     {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
                     }
-                ).then(function () {
+                ).then(response => {
                     console.log('SUCCESS!!');
+                    console.log(response);
                 })
                     .catch(function () {
                         console.log('FAILURE!!');

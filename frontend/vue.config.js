@@ -17,7 +17,7 @@ module.exports = {
       'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
     },
     watchOptions: {
-      poll: 1000,
+      poll: 4000,
       ignored: '/frontend/node_modules/'
     }
   },

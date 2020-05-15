@@ -30,8 +30,45 @@ Vue.use(IconsPlugin)
 
 Vue.use(VueTabulator);
 
+// font awesome settings
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+        faFilePdf,
+        faFileImage,
+        faFileExcel,
+        faFilePowerpoint,
+        faFileWord,
+        faFileVideo,
+        faFileArchive,
+        faFileAlt,
+        faFile,
+        faTrashAlt,
+        faUpload,
+        faTasks
+       } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(
+            faFilePdf,
+            faFileImage,
+            faFileExcel,
+            faFilePowerpoint,
+            faFileWord,
+            faFileVideo,
+            faFileArchive,
+            faFileAlt,
+            faFile,
+            faTrashAlt,
+            faUpload,
+            faTasks
+          )
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
 Vue.config.productionTip = false;
 Vue.use(Argon);
+
+
 window.vm = {}
 new Vue({
   el: '#app',

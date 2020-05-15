@@ -9,6 +9,11 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-solid-svg-icons": "^5.13.0",
+    "@fortawesome/vue-fontawesome": "^0.1.9",
+    "ag-grid-community": "^23.1.1",
+    "ag-grid-vue": "^23.1.1",
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.13.1",
     "flatpickr": "^4.5.1",
@@ -19,6 +24,7 @@
     "vue-analytics": "^5.16.0",
     "vue-flatpickr-component": "^8.1.1",
     "vue-lazyload": "^1.2.6",
+    "vue-property-decorator": "^8.4.2",
     "vue-raven": "^1.0.0",
     "vue-router": "^3.0.1",
     "vue-tabulator": "^1.2.2",
