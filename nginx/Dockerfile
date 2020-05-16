@@ -3,10 +3,10 @@ FROM node:12-alpine as build-deps
 
 WORKDIR /app/
 
-COPY frontend/package.json frontend/package-lock.json /app/
-RUN yarn install
+#COPY frontend/package.json frontend/package-lock.json /app/
 
 COPY frontend /app/
+RUN yarn install
 COPY .env /app/.env
 RUN yarn build
 

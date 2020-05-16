@@ -92,3 +92,6 @@ def pgdump(c):
 @task
 def test(c):
      host.run('''docker exec $(docker ps -q -f name=%s) ''' % BACKEND_NAME)
+@task
+def clean_docker(c):
+     host.run('''docker system prune --volumes -f''')

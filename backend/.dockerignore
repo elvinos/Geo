@@ -1,0 +1,6 @@
+node_modules
+docker-compose.yml
+docker-compose-old.yml
+docker-compose-prod.yml
+package-lock.json
+
