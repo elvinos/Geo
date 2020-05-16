@@ -90,3 +90,5 @@ deploy_key
 
 Geo_db
 /TestData/
+
+/frontend/package-lock.json
