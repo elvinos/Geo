@@ -103,3 +103,11 @@
 // Tabulator
 
 @import "~vue-tabulator/dist/scss/bootstrap/tabulator_bootstrap4";
+
+//ag-grid
+
+@import "~ag-grid-community/dist/styles/ag-grid";
+@import "~ag-grid-community/dist/styles/ag-theme-balham";
+@import "~ag-grid-community/dist/styles/ag-theme-bootstrap";
+@import "~ag-grid-community/dist/styles/ag-theme-material";
+@import "custom/file-manager";

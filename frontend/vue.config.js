@@ -3,6 +3,7 @@ const webpack = require('webpack');
 module.exports = {
   lintOnSave: false,
   publicPath: '',
+  runtimeCompiler: true,
   devServer: {
     hot: true,
     hotOnly: true,

@@ -16,12 +16,13 @@
 
 */
 import Vue from "vue";
+import store from './store';
 import App from "./App.vue";
 import router from "./router";
 import Argon from "./plugins/argon-kit";
 import './registerServiceWorker';
 import VueTabulator from 'vue-tabulator';
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 // Install BootstrapVue
 Vue.use(BootstrapVue)
@@ -31,37 +32,37 @@ Vue.use(IconsPlugin)
 Vue.use(VueTabulator);
 
 // font awesome settings
-import { library } from '@fortawesome/fontawesome-svg-core'
+import {library} from '@fortawesome/fontawesome-svg-core'
 import {
-        faFilePdf,
-        faFileImage,
-        faFileExcel,
-        faFilePowerpoint,
-        faFileWord,
-        faFileVideo,
-        faFileArchive,
-        faFileAlt,
-        faFile,
-        faTrashAlt,
-        faUpload,
-        faTasks
-       } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+    faFilePdf,
+    faFileImage,
+    faFileExcel,
+    faFilePowerpoint,
+    faFileWord,
+    faFileVideo,
+    faFileArchive,
+    faFileAlt,
+    faFile,
+    faTrashAlt,
+    faUpload,
+    faTasks
+} from '@fortawesome/free-solid-svg-icons'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
 
 library.add(
-            faFilePdf,
-            faFileImage,
-            faFileExcel,
-            faFilePowerpoint,
-            faFileWord,
-            faFileVideo,
-            faFileArchive,
-            faFileAlt,
-            faFile,
-            faTrashAlt,
-            faUpload,
-            faTasks
-          )
+    faFilePdf,
+    faFileImage,
+    faFileExcel,
+    faFilePowerpoint,
+    faFileWord,
+    faFileVideo,
+    faFileArchive,
+    faFileAlt,
+    faFile,
+    faTrashAlt,
+    faUpload,
+    faTasks
+)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
@@ -71,10 +72,11 @@ Vue.use(Argon);
 
 window.vm = {}
 new Vue({
-  el: '#app',
-  components: {
-    'django': App                                    // add this
-  },
-  router,
-  render: h => h(App)
+    el: '#app',
+    components: {
+        'django': App
+    },
+    store,
+    router,
+    render: h => h(App)
 }).$mount("#app");
