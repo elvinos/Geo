@@ -13,17 +13,24 @@
         </section>
         <section class="section section-skew">
             <div class="container">
-                <card shadow class="card-profile mt--300" no-body>
+                <card shadow class="card-profile" id="geolocation-card" no-body>
                     <div class="px-4">
                         <div class="text-center mt-5">
                             <h3>Geolocation App
                             </h3>
                             <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Convert addresses into
-                                coordinates with ease
+                                coordinates with ease for use with google maps or other applications
                             </div>
+
                         </div>
                         <div class="mt-5 py-5 border-top text-center">
-                            <div class="row justify-content-center">
+                            <div class="mt-3 row justify-content-center">
+                              <div class="h6 col-lg-9">Simply upload a csv file
+                                with your list of addresses in the first column or manually write the addresses you wish
+                                to query in the table below
+                            </div>
+                                </div>
+                            <div class="mt-3 row justify-content-center">
                                 <div class="col-lg-9">
                                     <b-form-file
                                             v-model="ufile"
@@ -31,22 +38,29 @@
                                             placeholder="Choose a file or drop it here..."
                                             drop-placeholder="Drop file here..."
                                     ></b-form-file>
+                                </div>
+                            </div>
+                            <div class="mt-5 row justify-content-center">
+                                <div class="col-lg-9">
                                     <b-button variant="primary" @click="submitFile()">
                                         Import Address List &nbsp; &nbsp;<font-awesome-icon icon="upload"/>
                                     </b-button>
-
-                                    <base-button type="primary" @click="updateTableWCoords()">Get Coordinates
-                                    </base-button>
                                 </div>
-                                <div class="d-flex justify-content-around wrapper-jexcel" id="spread">
-                                    <div id="spreadsheet" ref="spreadsheet"></div>
-                                </div>
+                            </div>
+                            <div class="mt-5 row justify-content-center">
                                 <VueTabulator v-model="tdata" :options="options"
                                               :integration="{ updateStrategy: 'REPLACE`' }"/>
-                                <base-button type="primary" @click="download()">Download Results
-                                </base-button>
-                                <!--                                <base-button type="primary" @click="addRow()">Add Row-->
-                                <!--                                </base-button>-->
+                            </div>
+                            <div class="mt-5 row justify-content-center">
+                                <div class="col-lg-9">
+                                    <base-button type="primary" @click="addRow()">Add Row
+                                    </base-button>
+                                    <base-button type="primary" @click="updateTableWCoords()">Get Coordinates
+                                    </base-button>
+                                    <base-button v-show="dReady" type="primary" @click="download()">Download Results
+                                    </base-button>
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -59,19 +73,14 @@
     </div>
 </template>
 <script>
-    import axios from 'axios';
     import Papa from 'papaparse';
     import locationiq from "../api/locationiq";
-    import {mapState} from 'vuex';
-
 
     let tableData = [
         {id: 1, search: "", lat: "", lon: ""},
         {id: 2, search: "", lat: "", lon: ""},
         {id: 3, search: "", lat: "", lon: ""},
         {id: 4, search: "", lat: "", lon: ""},
-        {id: 5, search: "", lat: "", lon: ""},
-
     ]
 
     // const token = '40abc2724e8a87'
@@ -91,14 +100,15 @@
                 ufile: null,
                 file: '',
                 text: '',
+                dReady: false,
                 tdata: tableData,
                 options: {
-                    height: "400px",
+                    // height: "400px",
                     layout: "fitColumns",
                     columns: [
-                        {title: "Search Address", field: "search", editor: true},
-                        {title: "Latitude", field: "lat", editor: true},
-                        {title: "Longitude", field: "lon", editor: true}
+                        {title: "Search Address", field: "search", editor: true,  widthGrow:2},
+                        {title: "Latitude", field: "lat", editor: false,   widthGrow:1},
+                        {title: "Longitude", field: "lon", editor: false,  widthGrow:1}
                     ],
                 }
             }
@@ -170,23 +180,6 @@
                 }());
                 saveData(blob, filename);
             },
-            blobToFile(theBlob, fileName) {
-                //A Blob() is almost a File() - it's just missing the two properties below which we will add
-                theBlob.lastModifiedDate = new Date();
-                theBlob.name = fileName;
-                return theBlob;
-            },
-            createDownloadFile(data) {
-                console.log(data)
-                // let content = data
-                // let filename = "geo_results.txt";
-                // let blob = new Blob([content], {
-                //     type: "text/plain;charset=utf-8"
-                // });
-                // const fd = new FormData()
-                // fd.append('file', blob)
-                // this.$store.dispatch('fileManager/postFile', fd)
-            },
 
             async unParseFile(file, callBack) {
                 Papa.unparse(file, {
@@ -208,6 +201,7 @@
                     }
                     await this.sleep(1000)
                 }
+                this.dReady = true
             },
             setData(i, search, latlon) {
                 this.$set(this.tdata, i, {id: i, search: search, lat: latlon[0], lon: latlon[1]});

@@ -1,0 +1,10 @@
+#geolocation-card {
+  margin-top: -300px;
+  @include media-breakpoint-up(lg) {
+        margin-top: -500px;
+    }
+}
+
+.custom-file-label::after {
+  background-color: transparent;
+}
