@@ -57,9 +57,9 @@ def install_instance(c):
         with host.cd(APP_NAME):
             host.run('git clone '+ GIT + ' .')
             host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
-            host.put('''docker-compose -c docker-compose-stage.yml build''')
-            host.put('''docker-compose -c docker-compose-stage.yml push''')
-            host.run('''docker stack deploy -c docker-compose-stage.yml %s''' % APP_NAME.lower())
+            host.put('''docker-compose -c docker-compose-prod.yml build''')
+            host.put('''docker-compose -c docker-compose-prod.yml push''')
+            host.run('''docker stack deploy -c docker-compose-prod.yml %s''' % APP_NAME.lower())
             host.sudo('chmod +x backend/manage.py')
             host.run('''docker exec $(docker ps -q -f name=%s) python /manage.py createsuperuser --noinput''' % BACKEND_NAME)
     else:
