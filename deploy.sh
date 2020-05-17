@@ -9,6 +9,7 @@ APP_NAME=geo
 
 PULL="git pull"
 CHECKOUT="git checkout master"
+PRUNE="docker system prune --volumes"
 BUILD="docker-compose -f docker-compose-prod.yml build"
 PUSH="docker-compose -f docker-compose-prod.yml push"
 STACK_DEPLOY="docker stack deploy -c docker-compose-prod.yml $APP_NAME"
@@ -19,6 +20,7 @@ ssh -i ./deploy_key -t -t $USER@$SERVER_IP_ADDRESS << EOF
   cd Geo
   $PULL
   $CHECKOUT
+  $PRUNE
   $BUILD
   $PUSH
   $STACK_DEPLOY
