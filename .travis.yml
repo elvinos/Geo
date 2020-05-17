@@ -1,23 +1,51 @@
-dist: bionic
-language: python
-python:
-- 3.7
-env:
-- SERVER_IP_ADDRESS=3.17.71.200
-services:
-- docker
-install:
-- pip install -r backend/requirements.txt
-- docker-compose -f docker-compose-prod.yml build
-before_install:
-- openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
-  -in .env.enc -out .env -d
-- openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
-  -in deploy_key.enc -out ./deploy_key -d
-- eval "$(ssh-agent -s)"
-- chmod 600 ./deploy_key
-- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-- ssh-add ./deploy_key
-- ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al /bin/sh
-script:
-- if [ "$TRAVIS_BRANCH" = "master" ]; then sh ./deploy.sh; fi
+#dist: bionic
+#language: python
+#python:
+#- 3.7
+#env:
+#- SERVER_IP_ADDRESS=3.17.71.200
+#services:
+#- docker
+#install:
+#- docker-compose -f docker-compose-prod.yml build
+#before_install:
+#- openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
+#  -in .env.enc -out .env -d
+#- openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
+#  -in deploy_key.enc -out ./deploy_key -d
+#- eval "$(ssh-agent -s)"
+#- chmod 600 ./deploy_key
+#- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+#- ssh-add ./deploy_key
+#- ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al /bin/sh
+#script:
+#- if [ "$TRAVIS_BRANCH" = "master" ]; then sh ./deploy.sh; fi
+
+sudo: true
+dist: trusty
+
+jobs:
+  include:
+    - stage: build docker images and push nginx to repo
+      script:
+      - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+      - docker-compose -f docker-compose-prod.yml build
+      - docker images
+      - docker push $DOCKER_USERNAME/geo:geo-nginx:latest
+    - stage: test that container works
+      script:
+        - docker-compose -f docker-compose-server.yml up
+        - docker-compose -f docker-compose-server.yml down
+    - stage: deploy
+      before_install:
+      - openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
+        -in .env.enc -out .env -d
+      - openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
+        -in deploy_key.enc -out ./deploy_key -d
+      - eval "$(ssh-agent -s)"
+      - chmod 600 ./deploy_key
+      - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+      - ssh-add ./deploy_key
+      - ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al /bin/sh
+      script:
+      - if [ "$TRAVIS_BRANCH" = "master" ]; then sh ./deploy.sh; fi

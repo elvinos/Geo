@@ -9,10 +9,12 @@ APP_NAME=geo
 
 PULL="git pull"
 CHECKOUT="git checkout master"
-PRUNE="docker system prune --volumes"
-BUILD="docker-compose -f docker-compose-prod.yml build"
-PUSH="docker-compose -f docker-compose-prod.yml push"
-STACK_DEPLOY="docker stack deploy -c docker-compose-prod.yml $APP_NAME"
+PRUNE="docker system prune --volumes -f"
+GET_IMAGE="docker pull elvinos/geo:geo-nginx"
+TAG_IMAGE="docker tag elvinos/geo:geo-nginx 127.0.0.1:5000/geo-nginx"
+BUILD="docker-compose -f docker-compose-server.yml build"
+PUSH="docker-compose -f docker-compose-server.yml push"
+STACK_DEPLOY="docker stack deploy -c docker-compose-server.yml $APP_NAME"
 
 #ssh -i ./deploy_key $USER@$SERVER_IP_ADDRESS pwd
 
