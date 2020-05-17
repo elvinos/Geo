@@ -23,6 +23,8 @@ ssh -i ./deploy_key -t -t $USER@$SERVER_IP_ADDRESS << EOF
   $PULL
   $CHECKOUT
   $PRUNE
+  $GET_IMAGE
+  $TAG_IMAGE
   $BUILD
   $PUSH
   $STACK_DEPLOY
