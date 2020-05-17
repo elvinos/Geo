@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   backend:
-    image: elvinos/geo:geo-nginx
+    image: elvinos/geo:geo-backend
     depends_on:
       - postgres
     volumes:
