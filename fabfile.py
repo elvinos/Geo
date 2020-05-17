@@ -72,7 +72,7 @@ def set_pass(c):
 @task
 def deploy(c):
 #     host.run('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
-    docker
+    host.local()
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
@@ -92,7 +92,9 @@ def pgdump(c):
 
 @task
 def test(c):
-     host.run('''docker exec $(docker ps -q -f name=%s) ''' % BACKEND_NAME)
+     host.local('echo TESTING')
+     run('docker-compose -f docker-compose-prod.yml build')
+
 @task
 def clean_docker(c):
      host.run('''docker system prune --volumes -f''')

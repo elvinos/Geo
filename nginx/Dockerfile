@@ -7,6 +7,7 @@ WORKDIR /app/
 
 COPY frontend /app/
 RUN yarn install
+RUN yarn remove node-sass && yarn add node-sass
 COPY .env /app/.env
 RUN yarn build
 
