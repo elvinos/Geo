@@ -13,11 +13,7 @@ jobs:
     - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
     - docker-compose -f docker-compose-prod.yml build
     - docker images
-    - docker push $DOCKER_USERNAME/geo:geo-nginx:latest
-  - stage: test that container works
-    script:
-    - docker-compose -f docker-compose-server.yml up
-    - docker-compose -f docker-compose-server.yml down
+    - docker push $DOCKER_USER/geo:geo-nginx:latest
   - stage: deploy
     before_install:
     - openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
