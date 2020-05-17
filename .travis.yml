@@ -13,7 +13,7 @@ jobs:
       -in .env.enc -out .env -d
     - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
     - docker-compose -f docker-compose-prod.yml build
-    - docker tag 127.0.0.53:5000/geo-nginx elvinos/geo:geo-nginx
+    - docker tag 0.0.0.0:5000/geo-nginx elvinos/geo:geo-nginx
     - docker image ls
     - docker push elvinos/geo:geo-nginx
   - stage: deploy

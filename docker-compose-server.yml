@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   backend:
-    image: 127.0.0.53:5000/geo-backend
+    image: 0.0.0.0:5000/geo-backend
     build:
       context: ./backend
     depends_on:
@@ -21,7 +21,7 @@ services:
       - backend_net
 
   nginx:
-    image: 127.0.0.53:5000/geo-nginx
+    image: 0.0.0.0:5000/geo-nginx
     ports:
       - "80:80"
     depends_on:

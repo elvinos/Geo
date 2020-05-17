@@ -19,6 +19,8 @@ NGINX_NAME = os.getenv('NGINX_NAME')
 DB_NAME = os.getenv('DB_NAME')
 DB_USER = os.getenv('POSTGRES_USER')
 DB_DB = os.getenv('POSTGRES_DB')
+DOCKER_USER = os.getenv('DOCKER_USER')
+DOCKER_PASS = os.getenv('DOCKER_PASS')
 
 
 host = Connection(host=str(HOST),
@@ -72,7 +74,6 @@ def set_pass(c):
 @task
 def deploy(c):
 #     host.run('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
-    host.local()
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
@@ -92,8 +93,25 @@ def pgdump(c):
 
 @task
 def test(c):
-     host.local('echo TESTING')
-     run('docker-compose -f docker-compose-prod.yml build')
+    os.system('docker-compose -f docker-compose-prod.yml build')
+    os.system('docker tag 0.0.0.0:5000/geo-nginx elvinos/geo:geo-nginx')
+    os.system('docker image ls')
+    os.system('docker push elvinos/geo:geo-nginx')
+    with host.cd(APP_NAME):
+        host.run('git pull')
+        host.run('git checkout master')
+        host.sudo('docker system prune --volumes -f')
+        host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
+        host.run('''sudo docker-compose -f docker-compose-server.yml build''')
+        host.run('''sudo docker-compose -f docker-compose-server.yml push''')
+        host.run('''sudo docker stack deploy -c docker-compose-server.yml %s''' % APP_NAME.lower())
+#        docker-compose -f docker-compose-prod.yml build'
+#      host.local('docker ')
+#     with host.cd('Sites/Geo'):
+#     host.local('echo $PATH')
+#     host.local('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
+#     host.local('docker-compose -f docker-compose-prod.yml build')
+#      run('docker-compose -f docker-compose-prod.yml build')
 
 @task
 def clean_docker(c):
