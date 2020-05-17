@@ -25,11 +25,12 @@
                         </div>
                         <div class="mt-5 py-5 border-top text-center">
                             <div class="mt-3 row justify-content-center">
-                              <div class="h6 col-lg-9">Simply upload a csv file
-                                with your list of addresses in the first column or manually write the addresses you wish
-                                to query in the table below
-                            </div>
+                                <div class="h6 col-lg-9">Simply upload a csv file
+                                    with your list of addresses in the first column or manually write the addresses you
+                                    wish
+                                    to query in the table below
                                 </div>
+                            </div>
                             <div class="mt-3 row justify-content-center">
                                 <div class="col-lg-9">
                                     <b-form-file
@@ -59,9 +60,11 @@
                                     </base-button>
                                     <base-button v-show="dReady" type="primary" @click="download()">Download Results
                                     </base-button>
-
                                 </div>
                             </div>
+                        </div>
+                        <div v-show="dReady" class="mt-3 mb-3 row justify-content-center">
+                            <div class="Map" id="gmap"/>
                         </div>
                     </div>
                 </card>
@@ -75,6 +78,7 @@
 <script>
     import Papa from 'papaparse';
     import locationiq from "../api/locationiq";
+    import gmapsInit from '../plugins/gmaps';
 
     let tableData = [
         {id: 1, search: "", lat: "", lon: ""},
@@ -106,14 +110,35 @@
                     // height: "400px",
                     layout: "fitColumns",
                     columns: [
-                        {title: "Search Address", field: "search", editor: true,  widthGrow:2},
-                        {title: "Latitude", field: "lat", editor: false,   widthGrow:1},
-                        {title: "Longitude", field: "lon", editor: false,  widthGrow:1}
+                        {title: "Search Address", field: "search", editor: true, widthGrow: 2},
+                        {title: "Latitude", field: "lat", editor: false, widthGrow: 1},
+                        {title: "Longitude", field: "lon", editor: false, widthGrow: 1}
                     ],
                 }
             }
         },
         methods: {
+            async createMap() {
+                try {
+                    const google = await gmapsInit();
+                    const geocoder = new google.maps.Geocoder();
+                    const map = new google.maps.Map(document.getElementById('gmap'));
+                    const bounds = new google.maps.LatLngBounds();
+                    for (let i = 0; i < this.tdata.length; i++) {
+                        let loc = new google.maps.LatLng(this.tdata[i]['lat'], this.tdata[i]['lon'])
+                        let marker = new google.maps.Marker({
+                            position: loc,
+                            map: map
+                        });
+                        bounds.extend(loc);
+                    }
+                    map.fitBounds(bounds);
+                    map.panToBounds(bounds);
+                } catch (error) {
+                    console.error(error);
+                }
+
+            },
             submitFile() {
                 if (this.ufile.size < 10 * 1024 * 1024) {
                     var vm = this
@@ -202,6 +227,7 @@
                     await this.sleep(1000)
                 }
                 this.dReady = true
+                await this.createMap()
             },
             setData(i, search, latlon) {
                 this.$set(this.tdata, i, {id: i, search: search, lat: latlon[0], lon: latlon[1]});
@@ -231,4 +257,11 @@
     }
 </script>
 <style>
+
+    .Map {
+        width: 100%;
+        height: 50vh;
+        /*width: 30vw;*/
+        /*height: 30vh;*/
+    }
 </style>
