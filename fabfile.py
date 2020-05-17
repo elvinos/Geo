@@ -72,7 +72,7 @@ def set_pass(c):
       host.run('''docker exec $(docker ps -q -f name=%s) python manage.py createsuperuser --noinput''' % BACKEND_NAME)
 
 @task
-def deploy(c):
+def deploy_old(c):
 #     host.run('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
     with host.cd(APP_NAME):
         host.run('git pull')
@@ -92,7 +92,7 @@ def pgdump(c):
     t.get('/tmp/%s.gz' % DB_NAME)
 
 @task
-def test(c):
+def deploy(c):
     os.system('docker-compose -f docker-compose-prod.yml build')
     os.system('docker tag 0.0.0.0:5000/geo-nginx elvinos/geo:geo-nginx')
     os.system('docker image ls')
@@ -100,7 +100,7 @@ def test(c):
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
-        host.sudo('docker system prune --volumes -f')
+        host.run('docker system prune --volumes -f')
         host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
         host.run('''sudo docker-compose -f docker-compose-server.yml build''')
         host.run('''sudo docker-compose -f docker-compose-server.yml push''')

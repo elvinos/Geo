@@ -1,6 +1,10 @@
 version: '3.3'
 
 services:
+  registry:
+    image: registry:2
+    ports:
+      - "5000:5000"
   backend:
     image: 0.0.0.0:5000/geo-backend
     build:
