@@ -1,51 +1,32 @@
-#dist: bionic
-#language: python
-#python:
-#- 3.7
-#env:
-#- SERVER_IP_ADDRESS=3.17.71.200
-#services:
-#- docker
-#install:
-#- docker-compose -f docker-compose-prod.yml build
-#before_install:
-#- openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
-#  -in .env.enc -out .env -d
-#- openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
-#  -in deploy_key.enc -out ./deploy_key -d
-#- eval "$(ssh-agent -s)"
-#- chmod 600 ./deploy_key
-#- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-#- ssh-add ./deploy_key
-#- ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al /bin/sh
-#script:
-#- if [ "$TRAVIS_BRANCH" = "master" ]; then sh ./deploy.sh; fi
-
 sudo: true
 dist: trusty
-
+env:
+  global:
+  - secure: KhOytbF12yJMq8PGecE3VfiZ4Vr9k4KNZsMHtgYJ6X18eQpauZMXAfnTNXxdb8q51B52spHYP4rAxrAw4AjGYK9Pi1/o5g4mdkzl8mAaBHbDRp/SMSJPBe3tQEUwFo8VcXQfI6oto9E54MG9/N5v7p693uPPAQtZXAMhVaTxNO3bcEd4lfj6B5c2N7gjouVAIbDdktQgSYgWbXpvh7cd9ZI+URgWxKfrsd+3bEVorXN3GRu0eAv+n1SAUrFV8ijqTTaLJDsVh0BknwOPhjuU6Mh6j24/5c7WdX8PK3sOnHFn4uijJpMoJRCUTUl30X3JQF436cw6YbnrSEEgim/qNz1hGIkrsuQMPa6kt1tRbF2UzxcVm1Cpjt1A5OEyjGfCBBlujtgXFclNkuY9B5PkINeM4r8Xd8PSjRlJQU2L/7pfr5Ldy0JFC6KhLm6TyTMqUCKq0ruJ8dpQFxtk0xQUrU3zZxVaIHhm/ZG5biVpm+SUNF2pHNb0d0Rzb21yPdqSpctrnuqbl0lby8slPJhyn+2XllGLQVlQLpegULruI7S40ntd9Covw35BgaNPa1/xjQkgXQlr41e50tqnjY1Xn97oPpAbt4DYCtJuEPSRFzu3E5ZusulGPmfbHxGWTVSj1umIKxQoEyzm80dzTDoyaKFnMUHlYrOsoOwtipiJwBA=
+  - secure: DiO/QdzBp0tCD2PjV+9FxJ2k+yayQ8voehybUvsbz/UrzIBh12DQSCIuphhWfVMWLCEGNaKgi5vbFmOLW009VuB2F4qMNO6ASUas/kClPccRx1Mv+rdMh+v+1CRzzROCYpHIFjIjQZiPNkXPiHcteEWPRPWQsbenvEyPLuVv9X6T+gi3uC9RFqob2zslhDmnjKwkqKPv3x1s+MDN3N31N7DHIExfGyMoFxY4Q6ROIqslPCuQHUD9kBuTyOMqcFoK4rKypfOTPj+YsJ63SZuRsfFK6fjv3x3fXMsQ/pijje6yPCfczx5OQLtQGGThM+ZRfl+LR9AImbJfJfCLt+fXQyaQ2S764EapQ+ItFwAUq4H8JdJfXV38MxBO+KQzLTCjwDzWJXFxJIoiDWbIoivJOPx/vaT5N2FOY2yVbPuJMje286HRV0+w8H4DhASQGV5kt+/2W5J3MtW6K8aUWamuCc/+bxPIH8f9X/S6XrBVdRKD6qtnR04LQaguKeIKBuFVW6iUpL0qcwR0oIw0ecO5jjRPUCAVOQVpZ15awaTBXN4f3DrlO74fyYy8oxy1RVn01xeEQcuuQbIQ0H/AJvtV6mSXoF3uw9UEabpCrAp/cgVmWNOrn3uwZ2QI4qQz6DZ3Ky7f+JnxwWkYpqiaLTJNj9f57p9JjtxVLSByH4Txzjc=
 jobs:
   include:
-    - stage: build docker images and push nginx to repo
-      script:
-      - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
-      - docker-compose -f docker-compose-prod.yml build
-      - docker images
-      - docker push $DOCKER_USERNAME/geo:geo-nginx:latest
-    - stage: test that container works
-      script:
-        - docker-compose -f docker-compose-server.yml up
-        - docker-compose -f docker-compose-server.yml down
-    - stage: deploy
-      before_install:
-      - openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
-        -in .env.enc -out .env -d
-      - openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
-        -in deploy_key.enc -out ./deploy_key -d
-      - eval "$(ssh-agent -s)"
-      - chmod 600 ./deploy_key
-      - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-      - ssh-add ./deploy_key
-      - ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al /bin/sh
-      script:
-      - if [ "$TRAVIS_BRANCH" = "master" ]; then sh ./deploy.sh; fi
+  - stage: build docker images and push nginx to repo
+    script:
+    - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+    - docker-compose -f docker-compose-prod.yml build
+    - docker images
+    - docker push $DOCKER_USERNAME/geo:geo-nginx:latest
+  - stage: test that container works
+    script:
+    - docker-compose -f docker-compose-server.yml up
+    - docker-compose -f docker-compose-server.yml down
+  - stage: deploy
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
+      -in .env.enc -out .env -d
+    - openssl aes-256-cbc -K $encrypted_dfdcfd5172af_key -iv $encrypted_dfdcfd5172af_iv
+      -in deploy_key.enc -out ./deploy_key -d
+    - eval "$(ssh-agent -s)"
+    - chmod 600 ./deploy_key
+    - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+    - ssh-add ./deploy_key
+    - ls -al /bin/sh && sudo rm /bin/sh && sudo ln -s /bin/bash /bin/sh && ls -al
+      /bin/sh
+    script:
+    - if [ "$TRAVIS_BRANCH" = "master" ]; then sh ./deploy.sh; fi
