@@ -14,8 +14,10 @@ jobs:
     - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
     - docker-compose -f docker-compose-prod.yml build
     - docker tag 0.0.0.0:5000/geo-nginx elvinos/geo:geo-nginx
+    - docker tag 0.0.0.0:5000/geo-backend elvinos/geo:geo-backend
     - docker image ls
     - docker push elvinos/geo:geo-nginx
+    - docker push elvinos/geo:geo-backend
   - stage: deploy
     before_install:
     - openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
