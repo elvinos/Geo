@@ -12,9 +12,9 @@ jobs:
           -in .env.enc -out .env -d
     - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
     - docker-compose -f docker-compose-prod.yml build
-    - TAG_IMAGE="docker image tag 127.0.0.1:5000/geo-nginx $DOCKER_USER/geo:geo-nginx"
-    - docker images
-    - docker push $DOCKER_USER/geo:geo-nginx
+    - docker tag 127.0.0.1:5000/geo-nginx elvinos/geo:geo-nginx
+    - docker image ls
+    - docker push elvinos/geo:geo-nginx
   - stage: deploy
     before_install:
     - openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv
