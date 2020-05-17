@@ -72,6 +72,7 @@ def set_pass(c):
 @task
 def deploy(c):
 #     host.run('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
+    docker
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
