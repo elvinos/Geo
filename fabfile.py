@@ -95,15 +95,17 @@ def pgdump(c):
 def deploy(c):
     os.system('docker-compose -f docker-compose-prod.yml build')
     os.system('docker tag 0.0.0.0:5000/geo-nginx elvinos/geo:geo-nginx')
+    os.system('docker tag 0.0.0.0:5000/geo-backend elvinos/geo:geo-backend')
     os.system('docker image ls')
     os.system('docker push elvinos/geo:geo-nginx')
+    os.system('docker push elvinos/geo:geo-backend')
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
         host.run('docker system prune --volumes -f')
         host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
         host.run('''sudo docker-compose -f docker-compose-server.yml build''')
-        host.run('''sudo docker-compose -f docker-compose-server.yml push''')
+#         host.run('''sudo docker-compose -f docker-compose-server.yml push''')
         host.run('''sudo docker stack deploy -c docker-compose-server.yml %s''' % APP_NAME.lower())
 #        docker-compose -f docker-compose-prod.yml build'
 #      host.local('docker ')
