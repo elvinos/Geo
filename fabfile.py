@@ -105,15 +105,7 @@ def deploy(c):
         host.run('docker system prune --volumes -f')
         host.put(".env", ("/home/ubuntu/"+APP_NAME+"/.env"))
         host.run('''sudo docker-compose -f docker-compose-server.yml build''')
-#         host.run('''sudo docker-compose -f docker-compose-server.yml push''')
         host.run('''sudo docker stack deploy -c docker-compose-server.yml %s''' % APP_NAME.lower())
-#        docker-compose -f docker-compose-prod.yml build'
-#      host.local('docker ')
-#     with host.cd('Sites/Geo'):
-#     host.local('echo $PATH')
-#     host.local('docker login -u %s -p %s' % (DOCKER_USER,DOCKER_PASS))
-#     host.local('docker-compose -f docker-compose-prod.yml build')
-#      run('docker-compose -f docker-compose-prod.yml build')
 
 @task
 def clean_docker(c):
