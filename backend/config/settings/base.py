@@ -39,7 +39,7 @@ LOCAL_APPS = [
     'apps.users',
     'apps.geolocation',
     'apps.filemanager',
-
+    'apps.drivetime'
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -225,6 +225,10 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
 #         'rest_framework.parsers.FileUploadParser'
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ]
 }
 
@@ -237,8 +241,10 @@ INSTALLED_APPS += ['raven.contrib.django.raven_compat']
 RAVEN_MIDDLEWARE = ['raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware']
 MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
 
+# SENTRY_DSN = env.str('SENTRY_DSN')
+
 # Sentry Configuration
-SENTRY_DSN = env.str('SENTRY_DSN')
+
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
 LOGGING = {
     'version': 1,
@@ -259,7 +265,7 @@ LOGGING = {
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
         },
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         }
@@ -288,6 +294,3 @@ LOGGING = {
     },
 }
 
-RAVEN_CONFIG = {
-    'DSN': SENTRY_DSN
-}

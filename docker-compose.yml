@@ -8,11 +8,12 @@ services:
       - postgres
     volumes:
       - ./backend:/backend/
-      - ./backend/media/:/media/
-      - ./backend/staticfiles/:/staticfiles/
+#      - ./backend/media/:/media/
+#      - ./backend/staticfiles/:/staticfiles/
+    tty: true
     command: /dev_start.sh
     entrypoint: /entrypoint.sh
-    restart: on-failure
+#    restart: on-failure
     env_file: .env
     networks:
       - backend_net

@@ -16,10 +16,10 @@
                 <card shadow class="card-profile" id="geolocation-card" no-body>
                     <div class="px-4">
                         <div class="text-center mt-5">
-                            <h3>Geolocation App
+                            <h3>Drive Time Analysis
                             </h3>
-                            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Convert addresses into
-                                coordinates with ease for use with google maps or other applications
+                            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Calculate drive times
+                                between locations, enabling ease of calculating average distances to competitors.
                             </div>
 
                         </div>
@@ -44,7 +44,7 @@
                             <div class="mt-5 row justify-content-center">
                                 <div class="col-lg-9">
                                     <b-button variant="primary" @click="submitFile()">
-                                        Import Address List &nbsp; &nbsp;<font-awesome-icon icon="upload"/>
+                                        Import Address List &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
                                     </b-button>
                                 </div>
                             </div>

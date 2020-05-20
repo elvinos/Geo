@@ -10,6 +10,7 @@ import Profile from "./views/Profile.vue";
 import GeoLocation from "./views/GeoLocation.vue";
 import FileManager from "./views/FileManager";
 import ProductList from "./views/ProductList";
+import DriveTime from "./views/DriveTime";
 
 Vue.use(Router);
 
@@ -32,6 +33,15 @@ export default new Router({
             components: {
                 header: AppHeader,
                 default: GeoLocation,
+                footer: AppFooter
+            }
+        },
+              {
+            path: "/drivetime",
+            name: "drivetime",
+            components: {
+                header: AppHeader,
+                default: DriveTime,
                 footer: AppFooter
             }
         },
