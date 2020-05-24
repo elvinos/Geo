@@ -158,7 +158,7 @@
                 ufile: null,
                 file: '',
                 text: '',
-                showCharts: true,
+                showCharts: false,
                 dReady: false,
                 tdata: tableData,
                 options: {

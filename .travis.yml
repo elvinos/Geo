@@ -15,8 +15,8 @@ jobs:
     - docker tag 0.0.0.0:5000/geo-nginx elvinos/geo:geo-nginx
     - docker tag 0.0.0.0:5000/geo-backend elvinos/geo:geo-backend
     - docker image ls
-    - if [ "$TRAVIS_BRANCH" = "master" ];  then docker push elvinos/geo:geo-nginx fi
-    - if [ "$TRAVIS_BRANCH" = "master" ]; then docker push elvinos/geo:geo-backend fi
+    - if [ "$TRAVIS_BRANCH" = "master" ];  then docker push elvinos/geo:geo-nginx; fi
+    - if [ "$TRAVIS_BRANCH" = "master" ]; then docker push elvinos/geo:geo-backend; fi
   - stage:
     - name: deploy
       if: branch = master
