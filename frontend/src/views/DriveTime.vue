@@ -97,20 +97,25 @@
                                     <!--                                    <span>{{dta.intervals}}</span>-->
                                 </div>
                             </div>
-                            <!--                            <div v-show="showCharts">-->
-                            <D3BarChart v-show="showCharts"
+                               <b-button variant="primary" @click="toggleCharts()">
+                                        Toggle &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
+                                    </b-button>
+                            <div v-show="showCharts">
+                            <D3BarChart :key="componentKey"
+                                        class="d3-class"
                                         :config="chart_config"
                                         :datum="chart_data"
                                         :title="chart_title"
                                         :source="chart_source"
                             ></D3BarChart>
-                            <D3BarChart v-show="showCharts"
+                            <D3BarChart :key="componentKey"
+                                        class="d3-class"
                                         :config="chart_config"
                                         :datum="chart_data_2"
                                         :title="chart_title"
                                         :source="chart_source"
                             ></D3BarChart>
-                            <!--                            </div>-->
+                            </div>
                         </div>
                     </div>
                 </card>
@@ -152,13 +157,14 @@
         },
         data() {
             return {
+                componentKey: '',
                 dta: '',
                 adt: '',
                 acl: '',
                 ufile: null,
                 file: '',
                 text: '',
-                showCharts: false,
+                showCharts: true,
                 dReady: false,
                 tdata: tableData,
                 options: {
@@ -294,6 +300,8 @@
                 this.acl = data.min_loc_tot
                 this.dta = data
                 this.showCharts = true
+                this.componentKey += 1;
+                console.log(JSON.parse(this.dta.intervals))
                 this.chart_data = this.convert_to_d3(JSON.parse(this.dta.intervals))
                 this.chart_data_2 = this.convert_to_d3(JSON.parse(this.dta.cum_intervals))
 
@@ -317,8 +325,10 @@
 
                 // console.log(tabulatorInstance.getData())
                 // console.log(this.tdata)
+            },
+            toggleCharts() {
+                this.showCharts = !this.showCharts
             }
-
         },
         created() {
             vm.component = this
@@ -327,4 +337,9 @@
     }
 </script>
 <style>
+    .d3-class {
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
 </style>
