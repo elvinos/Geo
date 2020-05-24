@@ -92,3 +92,5 @@ Geo_db
 /TestData/
 
 /frontend/package-lock.json
+/AWS_ELVINOSUCL.pem
+/backend/apps/drivetime/test_dm.pkl

@@ -1,5 +1,5 @@
-<template>
-    <div class="row justify-content-center">
+<!--<template>-->
+<!--    <div class="row justify-content-center">-->
         <div class="col-lg-6">
             <!-- Tabs with icons -->
             <div class="mb-3">

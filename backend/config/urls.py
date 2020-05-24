@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import include
+from apps.drivetime.views import DriveTimeAnalysisView
 # from apps.drivetime.views import call_drivetime
 # from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -15,6 +16,7 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('logout/', logout, {'next_page': '/'}, name='logout'),
     path('api/', include(api.urls)),
+    path('api/dta', DriveTimeAnalysisView.as_view()),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 

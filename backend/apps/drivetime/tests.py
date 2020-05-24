@@ -36,12 +36,15 @@ class GMapsTest(TestCase):
     def test_distance_analyis(self):
         data = pd.read_pickle("./apps/drivetime/test_dm.pkl")
         dta = DriveTimeAnalysis(data)
-        print(dta.find_location_min())
-        print(dta.calc_average_closest_dt())
+        # print(dta.find_location_min())
+        # print(dta.calc_average_closest_dt())
 #         print(dta.calc_average_closest_dt)
 #
-#         print(dta.create_cumulative_intervals)
-#         print(dta.create_bucket_intervals)
+        # print(dta.create_intervals())
+        # print(dta.create_cum_intervals())
 
 
-
+    def test_run(self):
+        data = pd.read_pickle("./apps/drivetime/test_dm.pkl")
+        dta = DriveTimeAnalysis(data)
+        print(dta.run_full_analysis())

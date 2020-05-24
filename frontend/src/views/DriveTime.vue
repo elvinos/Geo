@@ -24,23 +24,45 @@
 
                         </div>
                         <div class="mt-5 py-5 border-top text-center">
-                            <div class="mt-3 row justify-content-center">
-                                <div class="h6 col-lg-9">Simply upload a csv file
-                                    with your list of addresses in the first column or manually write the addresses you
-                                    wish
-                                    to query in the table below
-                                </div>
-                            </div>
-                            <div class="mt-3 row justify-content-center">
-                                <div class="col-lg-9">
-                                    <b-form-file
-                                            v-model="ufile"
-                                            :state="Boolean(ufile)"
-                                            placeholder="Choose a file or drop it here..."
-                                            drop-placeholder="Drop file here..."
-                                    ></b-form-file>
-                                </div>
-                            </div>
+                            <tabs tabNavClasses="nav-fill flex-column flex-sm-row nav-wrapper"
+                                  tabContentClasses="card shadow">
+                                <tab-pane id="profile">
+                                    <span slot="title">
+                                        <i class="ni ni-cloud-upload-96 mr-2"></i>
+                                        Upload Data
+                                    </span>
+                                    <div class="mt-3 py-5 text-center">
+                                        <div class="mt-3 row justify-content-center">
+                                            <div class="h6 col-lg-9">Simply upload a csv file
+                                                with your list of addresses in the first column or manually write the
+                                                addresses you
+                                                wish
+                                                to query in the table below
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 row justify-content-center">
+                                            <div class="col-lg-9">
+                                                <b-form-file
+                                                        v-model="ufile"
+                                                        :state="Boolean(ufile)"
+                                                        placeholder="Choose a file or drop it here..."
+                                                        drop-placeholder="Drop file here..."
+                                                ></b-form-file>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tab-pane>
+                                <tab-pane id="home">
+                                <span slot="title">
+                                    <i class="ni ni-bell-55 "></i>
+                                    Paste Data From Excel/CSV File
+                                </span>
+                                    <div class="mt-3 py-5 row justify-content-center">
+                                        <VueTabulator ref="tabulator" v-model="tdata" :options="options"
+                                                      :integration="{ updateStrategy: 'REPLACE`' }"/>
+                                    </div>
+                                </tab-pane>
+                            </tabs>
                             <div class="mt-5 row justify-content-center">
                                 <div class="col-lg-9">
                                     <b-button variant="primary" @click="submitFile()">
@@ -49,22 +71,46 @@
                                 </div>
                             </div>
                             <div class="mt-5 row justify-content-center">
-                                <VueTabulator v-model="tdata" :options="options"
-                                              :integration="{ updateStrategy: 'REPLACE`' }"/>
-                            </div>
-                            <div class="mt-5 row justify-content-center">
                                 <div class="col-lg-9">
-                                    <base-button type="primary" @click="addRow()">Add Row
-                                    </base-button>
-                                    <base-button type="primary" @click="updateTableWCoords()">Get Coordinates
-                                    </base-button>
-                                    <base-button v-show="dReady" type="primary" @click="download()">Download Results
-                                    </base-button>
+                                    <b-button variant="primary" @click="get_drivetime_data()">
+                                        Get all data &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
+                                    </b-button>
+                                </div>
+                                <div class="col-lg-9">
+                                    <b-button variant="primary" @click="post_data()">
+                                        Post &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
+                                    </b-button>
                                 </div>
                             </div>
-                        </div>
-                        <div v-show="dReady" class="mt-3 mb-3 row justify-content-center">
-                            <div class="Map" id="gmap"/>
+                            <dl class="row">
+                                <dt class="col-sm-3">Average Drive Time</dt>
+                                <dd class="col-sm-9">
+                                    <p class="text-muted">{{adt}}</p>
+                                </dd>
+                                <dt class="col-sm-3">Average Closest Location</dt>
+                                <dd class="col-sm-9">
+                                    <p class="text-muted">{{acl}}</p>
+                                </dd>
+                            </dl>
+                            <div class="mt-5 row justify-content-center">
+                                <div class="col-lg-9">
+                                    <!--                                    <span>{{dta.intervals}}</span>-->
+                                </div>
+                            </div>
+                            <!--                            <div v-show="showCharts">-->
+                            <D3BarChart v-show="showCharts"
+                                        :config="chart_config"
+                                        :datum="chart_data"
+                                        :title="chart_title"
+                                        :source="chart_source"
+                            ></D3BarChart>
+                            <D3BarChart v-show="showCharts"
+                                        :config="chart_config"
+                                        :datum="chart_data_2"
+                                        :title="chart_title"
+                                        :source="chart_source"
+                            ></D3BarChart>
+                            <!--                            </div>-->
                         </div>
                     </div>
                 </card>
@@ -78,42 +124,67 @@
 <script>
     import Papa from 'papaparse';
     import locationiq from "../api/locationiq";
+    import restapi from "../api/restapi";
     import gmapsInit from '../plugins/gmaps';
+    import {D3BarChart} from 'vue-d3-charts';
+    import Tabs from "@/components/Tabs/Tabs.vue";
+    import TabPane from "@/components/Tabs/TabPane.vue";
+    import {TabulatorComponent} from "vue-tabulator";
+    import Charts from "./Charts";
+
 
     let tableData = [
-        {id: 1, search: "", lat: "", lon: ""},
-        {id: 2, search: "", lat: "", lon: ""},
-        {id: 3, search: "", lat: "", lon: ""},
-        {id: 4, search: "", lat: "", lon: ""},
+        {id: 1, ad1: "", ad2: ""},
+        {id: 2, ad1: "", ad2: ""},
+        {id: 3, ad1: "", ad2: ""},
     ]
 
-    // const token = '40abc2724e8a87'
-    // const token =  "d6a28a58bb22cbf5c3a2d2917f178e62"
-    // https://locationiq.org/v1/search.php?key=40abc2724e8a87&q=Statue%20of%20Liberty&format=json
 
     let token = process.env.VUE_APP_LIQ_TOKEN
 
-    import {TabulatorComponent} from "vue-tabulator";
 
     export default {
         components: {
-            'AwesomeLocalTable': TabulatorComponent
+            D3BarChart,
+            Tabs,
+            TabPane,
+            TabulatorComponent
         },
         data() {
             return {
+                dta: '',
+                adt: '',
+                acl: '',
                 ufile: null,
                 file: '',
                 text: '',
+                showCharts: true,
                 dReady: false,
                 tdata: tableData,
                 options: {
                     maxHeight: "1000px",
                     layout: "fitColumns",
+                    clipboard: true,
+                    clipboardPasteAction: "replace",
                     columns: [
-                        {title: "Search Address", field: "search", editor: true, widthGrow: 2},
-                        {title: "Latitude", field: "lat", editor: false, widthGrow: 1},
-                        {title: "Longitude", field: "lon", editor: false, widthGrow: 1}
+                        {title: "Main Addresses", field: "ad1", widthGrow: 1},
+                        {title: "Comparison Addresses", field: "ad2", widthGrow: 1}
                     ],
+                },
+                chart_title: 'Your title goes here',
+                chart_source: 'Your source goes here',
+                chart_data: [],
+                chart_data_2: [],
+                chart_config: {
+                    key: 'range',
+                    values: ['value'],
+                    axis: {
+                        yTicks: 3
+                    },
+                    color: {
+                        default: '#222f3e',
+                        current: '#41B882'
+                    }
                 }
             }
         },
@@ -214,54 +285,46 @@
                 })
             },
 
-            async getLocations() {
-                this.tdata = await locationiq.batchSearch(this.getSearch())
+            async get_drivetime_data() {
+                this.dta = await restapi.get_all_data(this.update_data)
             },
 
-            async updateTableWCoords() {
-                for (let i = 0; i < this.tdata.length; i++) {
-                    let item = this.tdata[i];
-                    if (item.search !== '') {
-                        await locationiq.queryCoordinatesLocationIQ(item.search, i, this.setData)
-                    }
-                    await this.sleep(1000)
-                }
-                this.dReady = true
-                await this.createMap()
-            },
-            setData(i, search, latlon) {
-                this.$set(this.tdata, i, {id: i, search: search, lat: latlon[0], lon: latlon[1]});
-            },
+            update_data(data) {
+                this.adt = data.mean_tot
+                this.acl = data.min_loc_tot
+                this.dta = data
+                this.showCharts = true
+                this.chart_data = this.convert_to_d3(JSON.parse(this.dta.intervals))
+                this.chart_data_2 = this.convert_to_d3(JSON.parse(this.dta.cum_intervals))
 
-            getSearch() {
-                let searches = []
-                for (let i = 0; i < this.tdata.length; i++) {
-                    let item = this.tdata[i];
-                    if (item.search !== '') {
-                        searches.push(item.search);
-                    }
+
+            },
+            convert_to_d3(data) {
+                let workAsArray = []; // This will be the resulting array
+                for (var key in data) {
+                    var entry = {value: data[key], range: key}; // This will be each of the three graded things
+                    // entry.id = key;
+                    workAsArray.push(entry)
                 }
-                console.log(searches)
-                return searches
+                console.log(workAsArray)
+                return workAsArray
             },
-            addRow() {
-                this.$set(this.tdata, this.tdata.length, {id: this.tdata.length, search: "", lat: "", lon: ""});
-            },
-            sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            },
+            async post_data() {
+                const tabulatorInstance = this.$refs.tabulator.getInstance();
+                this.tdata = tabulatorInstance.getData()
+                this.dta = await restapi.dt_post(this.tdata, this.update_data)
+
+
+                // console.log(tabulatorInstance.getData())
+                // console.log(this.tdata)
+            }
+
         },
         created() {
             vm.component = this
-        },
+        }
+        ,
     }
 </script>
 <style>
-
-    .Map {
-        width: 100%;
-        height: 50vh;
-        /*width: 30vw;*/
-        /*height: 30vh;*/
-    }
 </style>

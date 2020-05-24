@@ -8,6 +8,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import environ
 from datetime import timedelta
 
+
 ROOT_DIR = environ.Path(__file__) - 3
 
 # Load operating system environment variables and then prepare to use them
@@ -18,6 +19,13 @@ env = environ.Env()
 #     print('Loading : {}'.format(env_file))
 #     env.read_env(env_file)
 #     print('The .env file has been loaded. See base.py for more information')
+
+
+# DEBUG
+# ------------------------------------------------------------------------------
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
+SECRET_KEY = env.str('SECRET_KEY')
+DEBUG = True
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -56,12 +64,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-# DEBUG
-# ------------------------------------------------------------------------------
-# See: https://docs.djangoproject.com/en/dev/ref/settings/#debug
-SECRET_KEY = env.str('SECRET_KEY')
-DEBUG = False
 
 # DOMAINS
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '3.17.71.200', 'ec2-3-17-71-200.us-east-2.compute.amazonaws.com']
@@ -229,7 +231,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-    ]
+    ],
 }
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240 # higher than the count of fields
