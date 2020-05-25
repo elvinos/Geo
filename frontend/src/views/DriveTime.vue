@@ -81,6 +81,16 @@
                                         Post &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
                                     </b-button>
                                 </div>
+                                <div class="col-lg-9">
+                                    <b-button variant="primary" @click="startTask()">
+                                        Start Task &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
+                                    </b-button>
+                                </div>
+                            </div>
+                            <div class="row row-grid justify-content-center align-items-center mt-lg">
+                                <div class="col-lg-9">
+                                    <base-progress :value="prg_val" :label="task_label"></base-progress>
+                                </div>
                             </div>
                             <dl class="row">
                                 <dt class="col-sm-3">Average Drive Time</dt>
@@ -97,24 +107,24 @@
                                     <!--                                    <span>{{dta.intervals}}</span>-->
                                 </div>
                             </div>
-                               <b-button variant="primary" @click="toggleCharts()">
-                                        Toggle &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
-                                    </b-button>
+                            <b-button variant="primary" @click="toggleCharts()">
+                                Toggle &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
+                            </b-button>
                             <div v-show="showCharts">
-                            <D3BarChart :key="componentKey"
-                                        class="d3-class"
-                                        :config="chart_config"
-                                        :datum="chart_data"
-                                        :title="chart_title"
-                                        :source="chart_source"
-                            ></D3BarChart>
-                            <D3BarChart :key="componentKey"
-                                        class="d3-class"
-                                        :config="chart_config"
-                                        :datum="chart_data_2"
-                                        :title="chart_title"
-                                        :source="chart_source"
-                            ></D3BarChart>
+                                <!--                                <D3BarChart :key="componentKey"-->
+                                <!--                                            class="d3-class"-->
+                                <!--                                            :config="chart_config"-->
+                                <!--                                            :datum="chart_data"-->
+                                <!--                                            :title="chart_title"-->
+                                <!--                                            :source="chart_source"-->
+                                <!--                                ></D3BarChart>-->
+                                <!--                                <D3BarChart :key="componentKey"-->
+                                <!--                                            class="d3-class"-->
+                                <!--                                            :config="chart_config"-->
+                                <!--                                            :datum="chart_data_2"-->
+                                <!--                                            :title="chart_title"-->
+                                <!--                                            :source="chart_source"-->
+                                <!--                                ></D3BarChart>-->
                             </div>
                         </div>
                     </div>
@@ -134,6 +144,7 @@
     import {D3BarChart} from 'vue-d3-charts';
     import Tabs from "@/components/Tabs/Tabs.vue";
     import TabPane from "@/components/Tabs/TabPane.vue";
+    import BaseProgress from "@/components/BaseProgress.vue";
     import {TabulatorComponent} from "vue-tabulator";
     import Charts from "./Charts";
 
@@ -153,10 +164,14 @@
             D3BarChart,
             Tabs,
             TabPane,
-            TabulatorComponent
+            TabulatorComponent,
+            BaseProgress
         },
         data() {
             return {
+                prg_val: 0,
+                task_label: "",
+                total:100,
                 componentKey: '',
                 dta: '',
                 adt: '',
@@ -328,7 +343,38 @@
             },
             toggleCharts() {
                 this.showCharts = !this.showCharts
-            }
+            },
+
+            startTask() {
+                restapi.start_test(this.update_progress)
+            },
+
+            update_progress(task_id) {
+                this.polling = setInterval(() => {
+                    restapi.update_status(task_id, this.set_update_prg)
+                }, 1000)
+            },
+
+            set_update_prg(data) {
+                if (data.state === 'FINISHED') {
+                    clearInterval(this.polling)
+                    this.task_label = "Task Complete"
+                    this.prg_val = 100
+                    this.update_data(data)
+                } else if (data.state === 'PENDING') {
+                    this.prg_val = 0
+                    this.task_label = "Pending in Queue"
+                } else {
+                    if (this.task_label != "Task Running") {
+                        this.task_label = "Task Running"
+                        this.total = data.total
+                    }
+                    this.prg_val = parseInt((data.iter/this.total*100).toFixed(0))
+                }
+            },
+        },
+        beforeDestroy() {
+            clearInterval(this.polling)
         },
         created() {
             vm.component = this

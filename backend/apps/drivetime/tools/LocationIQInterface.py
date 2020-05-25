@@ -27,7 +27,7 @@ class LocationIQInterface:
             self.api_instance = locationiq.DirectionsApi(api_client)
 
     @sleep_and_retry
-    @limits(calls=2, period=1)
+    @limits(calls=2, period=2)
     def get_distance_duration(self, coords1=['-72.5737841411505','42.1723059'], coords2=['-70.9682506139195','42.55432235']):
         """Requires two pairs of coordinates: {longitude},{latitude}
            Outputs the fastest drive time and distance in seconds and m
