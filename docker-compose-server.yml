@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  backend: &django
+  backend: &backend
     image: elvinos/geo:geo-backend
     depends_on:
       - postgres
@@ -11,82 +11,60 @@ services:
     entrypoint: /entrypoint.sh
     restart: on-failure
     env_file: .env
-    ports:
-     - "8080:8080"
-    networks:
-      - backend_net
 
   nginx:
     image: elvinos/geo:geo-nginx
-    ports:
-      - "80:80"
     depends_on:
       - backend
     volumes:
       - ./backend/media/:/media/
       - ./backend/staticfiles/:/staticfiles/
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    logging:
-      driver: none
-    networks:
-      - backend_net
+    labels:
+      - "traefik.enable=true"
+      - 'traefik.frontend.rule=Host:www.ec2-3-17-71-200.us-east-2.compute.amazonaws.com'
+      - "traefik.port=80"
+
+  traefik:
+    image: elvinos/geo:geo-traefik
+    depends_on:
+      - backend
+    volumes:
+      - traefik:/etc/traefik/acme
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+      - "0.0.0.0:5555:5555"
 
   postgres:
-    image: postgres:12-alpine
-    ports:
-      - "5432:5432"
+    image: elvinos/geo:geo-postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - backups:/var/lib/postgresql/backups/
     env_file: .env
-    restart: on-failure
-    networks:
-      - backend_net
 
   redis:
     image: redis:latest
-    ports:
-      - "6379:6379"
     volumes:
       - redisdata:/data
-    networks:
-      - backend_net
 
   celeryworker:
-    <<: *django
-    working_dir: /backend
-    depends_on:
-      - redis
-      - postgres
-    ports: []
+    <<: *backend
+    image: celeryworker
     command: /start-celeryworker
-    networks:
-      - backend_net
 
   celerybeat:
-    <<: *django
-    working_dir: /backend
-    depends_on:
-      - redis
-      - postgres
-    ports: []
+    <<: *backend
+    image: celerybeat
     command: /start-celerybeat
-    networks:
-      - backend_net
 
   flower:
-    <<: *django
-    working_dir: /backend
-    ports:
-      - "5555:5555"
+    <<: *backend
+    image: flower
     command: /start-flower
-    networks:
-      - backend_net
 
 volumes:
-  postgres_data:
-  backups:
-  redisdata:
-
-networks:
-  backend_net:
+  postgres_data: {}
+  backups: {}
+  redisdata: {}
+  traefik: {}
