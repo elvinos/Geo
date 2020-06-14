@@ -17,9 +17,13 @@ jobs:
     - docker-compose -f docker-compose-prod.yml build
     - docker tag 0.0.0.0:5000/geo-nginx elvinos/geo:geo-nginx
     - docker tag 0.0.0.0:5000/geo-backend elvinos/geo:geo-backend
+    - docker tag 0.0.0.0:5000/geo-traefik elvinos/geo:geo-traefik
+    - docker tag 0.0.0.0:5000/geo-postgres elvinos/geo:geo-postgres
     - docker image ls
     - if [ "$TRAVIS_BRANCH" = "master" ];  then docker push elvinos/geo:geo-nginx; fi
     - if [ "$TRAVIS_BRANCH" = "master" ]; then docker push elvinos/geo:geo-backend; fi
+    - if [ "$TRAVIS_BRANCH" = "master" ]; then docker push elvinos/geo:geo-traefik fi
+    - if [ "$TRAVIS_BRANCH" = "master" ]; then docker push elvinos/geo:geo-postgres fi
   - stage: deploy
     if: branch = master
     before_install:
