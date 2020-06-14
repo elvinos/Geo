@@ -55,13 +55,14 @@ def compare_driving_distance(coords_ar_1, coords_ar_2):
     LIQ = LocationIQInterface()
     df = pd.DataFrame(np.zeros((len(coords_ar_1), len(coords_ar_2))))
     tot = (len(coords_ar_1) * len(coords_ar_2))
+    prog = 0
     for ind_1, coords_1 in enumerate(coords_ar_1):
         time = []
         for coords_2 in coords_ar_2:
             duration, distance = LIQ.get_distance_duration(coords_1, coords_2)
             time.append(duration)
-            prog = len(time) * (ind_1 + 1)
             # Make the progress counter an accessible state on celery
+            prog += 1
             current_task.update_state(
                 state="PROGRESS",
                 meta={

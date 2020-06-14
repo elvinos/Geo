@@ -23,7 +23,6 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.log(response.data);
                     callback(response.data)
                 })
         } catch (error) {
@@ -34,9 +33,27 @@ export default {
 
     start_test(callback) {
         try {
+            // TODO: Switch me back to dt_post
             axios.get('api/drivetime/start_test')
                 .then(response => {
                     console.log(response.data);
+                    callback(response.data)
+                })
+        } catch (error) {
+            console.log(error);
+        }
+
+    },
+
+    start_task(data, callback) {
+        try {
+            axios.post('api/drivetime/dt_post', data,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
                     callback(response.data)
                 })
         } catch (error) {
@@ -53,7 +70,6 @@ export default {
                 params: params
             })
                 .then(response => {
-                    console.log(response.data);
                     callback(response.data)
                 })
         } catch (error) {

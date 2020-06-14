@@ -1,7 +1,7 @@
 <template>
     <div class="profile-page">
         <section class="section-profile-cover section-shaped my-0">
-            <div class="shape shape-style-1 shape-primary shape-skew alpha-4">
+            <div class="shape shape-style-1 shape-dark shape-skew alpha-4">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -24,9 +24,9 @@
 
                         </div>
                         <div class="mt-5 py-5 border-top text-center">
-                            <tabs tabNavClasses="nav-fill flex-column flex-sm-row nav-wrapper"
+                            <tabs ref="tabs" tabNavClasses="nav-fill flex-column flex-sm-row nav-wrapper"
                                   tabContentClasses="card shadow">
-                                <tab-pane id="profile">
+                                <tab-pane id="upload">
                                     <span slot="title">
                                         <i class="ni ni-cloud-upload-96 mr-2"></i>
                                         Upload Data
@@ -40,7 +40,7 @@
                                                 to query in the table below
                                             </div>
                                         </div>
-                                        <div class="mt-3 row justify-content-center">
+                                        <div class="mt-3 px-5 row justify-content-center">
                                             <div class="col-lg-9">
                                                 <b-form-file
                                                         v-model="ufile"
@@ -51,80 +51,86 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="mt-2 mb-5 row justify-content-center">
+                                        <div class="col-lg-9">
+                                            <b-button variant="primary" @click="submitFile()">
+                                                Import Address List &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
+                                            </b-button>
+                                        </div>
+                                    </div>
+                                    <div v-show="showUpTable" class="mt-2 ml-2 mr-2 py-1 row justify-content-end">
+                                        <b-button variant="secondary" @click="delete_row()">
+                                            Delete Row &nbsp;&nbsp;<font-awesome-icon icon="trash-alt"/>
+                                        </b-button>
+                                    </div>
+                                    <div v-show="showUpTable" class="ml-2 mr-2 py-5 row justify-content-center">
+                                        <VueTabulator ref="tabulatorup" v-model="tdataup" :options="optionsUp"
+                                                      :integration="{ updateStrategy: 'REPLACE`' }"/>
+
+                                    </div>
                                 </tab-pane>
-                                <tab-pane id="home">
+                                <tab-pane id="paste">
                                 <span slot="title">
                                     <i class="ni ni-bell-55 "></i>
                                     Paste Data From Excel/CSV File
                                 </span>
-                                    <div class="mt-3 py-5 row justify-content-center">
+                                    <div class="mt-2 ml-2 mr-2 px-2 py-3 row">
+                                        <h3 class="heading-title text-warning mb-1">Data Clipboard</h3>
+                                        <p class="text-left">Paste pairs of longitude and latitude data into the
+                                            respective columns to perform matrix distance analysis...</p>
+                                    </div>
+                                    <div class="mt-1 ml-2 mr-2 row justify-content-center">
                                         <VueTabulator ref="tabulator" v-model="tdata" :options="options"
                                                       :integration="{ updateStrategy: 'REPLACE`' }"/>
                                     </div>
                                 </tab-pane>
                             </tabs>
                             <div class="mt-5 row justify-content-center">
-                                <div class="col-lg-9">
-                                    <b-button variant="primary" @click="submitFile()">
-                                        Import Address List &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
-                                    </b-button>
-                                </div>
-                            </div>
-                            <div class="mt-5 row justify-content-center">
-                                <div class="col-lg-9">
-                                    <b-button variant="primary" @click="get_drivetime_data()">
-                                        Get all data &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
-                                    </b-button>
-                                </div>
-                                <div class="col-lg-9">
-                                    <b-button variant="primary" @click="post_data()">
-                                        Post &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
-                                    </b-button>
-                                </div>
-                                <div class="col-lg-9">
+                                <div v-show="showTask" class="col-lg-9">
                                     <b-button variant="primary" @click="startTask()">
                                         Start Task &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
                                     </b-button>
                                 </div>
+
                             </div>
-                            <div class="row row-grid justify-content-center align-items-center mt-lg">
+                            <div v-show="!showTask" class="row row-grid justify-content-center align-items-center">
                                 <div class="col-lg-9">
                                     <base-progress :value="prg_val" :label="task_label"></base-progress>
                                 </div>
                             </div>
-                            <dl class="row">
-                                <dt class="col-sm-3">Average Drive Time</dt>
-                                <dd class="col-sm-9">
-                                    <p class="text-muted">{{adt}}</p>
-                                </dd>
-                                <dt class="col-sm-3">Average Closest Location</dt>
-                                <dd class="col-sm-9">
-                                    <p class="text-muted">{{acl}}</p>
-                                </dd>
-                            </dl>
-                            <div class="mt-5 row justify-content-center">
-                                <div class="col-lg-9">
-                                    <!--                                    <span>{{dta.intervals}}</span>-->
-                                </div>
-                            </div>
-                            <b-button variant="primary" @click="toggleCharts()">
-                                Toggle &nbsp;&nbsp;<font-awesome-icon icon="upload"/>
-                            </b-button>
                             <div v-show="showCharts">
-                                <!--                                <D3BarChart :key="componentKey"-->
-                                <!--                                            class="d3-class"-->
-                                <!--                                            :config="chart_config"-->
-                                <!--                                            :datum="chart_data"-->
-                                <!--                                            :title="chart_title"-->
-                                <!--                                            :source="chart_source"-->
-                                <!--                                ></D3BarChart>-->
-                                <!--                                <D3BarChart :key="componentKey"-->
-                                <!--                                            class="d3-class"-->
-                                <!--                                            :config="chart_config"-->
-                                <!--                                            :datum="chart_data_2"-->
-                                <!--                                            :title="chart_title"-->
-                                <!--                                            :source="chart_source"-->
-                                <!--                                ></D3BarChart>-->
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-4 order-lg-1">
+                                        <div class="card-profile-stats d-flex justify-content-center">
+                                            <div>
+                                                <span class="heading">{{convertMinsToHrsMins(adt)}}</span>
+                                                <span class="description">Average Drive Time</span>
+                                            </div>
+                                            <div>
+                                                <span class="heading">{{convertMinsToHrsMins(acl)}}</span>
+                                                <span class="description">Average Closest Location</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <D3BarChart :key="componentKey"
+                                            class="d3-class"
+                                            :config="chart_config"
+                                            :datum="chart_data"
+                                            :title="chart_title"
+                                            :source="chart_source"
+                                ></D3BarChart>
+                                <D3BarChart :key="componentKey_2"
+                                            class="d3-class"
+                                            :config="chart_config"
+                                            :datum="chart_data_2"
+                                            :title="chart_title_2"
+                                            :source="chart_source"
+                                ></D3BarChart>
+                                <div class="row justify-content-center">
+                                    <base-button v-show="dReady" type="primary" @click="download()">Download Results
+                                    </base-button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -138,15 +144,12 @@
 </template>
 <script>
     import Papa from 'papaparse';
-    import locationiq from "../api/locationiq";
     import restapi from "../api/restapi";
-    import gmapsInit from '../plugins/gmaps';
     import {D3BarChart} from 'vue-d3-charts';
     import Tabs from "@/components/Tabs/Tabs.vue";
     import TabPane from "@/components/Tabs/TabPane.vue";
     import BaseProgress from "@/components/BaseProgress.vue";
     import {TabulatorComponent} from "vue-tabulator";
-    import Charts from "./Charts";
 
 
     let tableData = [
@@ -154,6 +157,8 @@
         {id: 2, ad1: "", ad2: ""},
         {id: 3, ad1: "", ad2: ""},
     ]
+
+    let tableDataUp = tableData
 
 
     let token = process.env.VUE_APP_LIQ_TOKEN
@@ -170,18 +175,34 @@
         data() {
             return {
                 prg_val: 0,
-                task_label: "",
-                total:100,
-                componentKey: '',
+                task_label: "Task Pending",
+                total: 100,
+                componentKey: 1,
+                componentKey_2: this.componentKey,
                 dta: '',
                 adt: '',
                 acl: '',
                 ufile: null,
                 file: '',
                 text: '',
-                showCharts: true,
-                dReady: false,
+                showCharts: false,
+                showUpTable: false,
+                dReady: true,
+                showTask: true,
                 tdata: tableData,
+                tdataup: tableDataUp,
+                fileData: null,
+                optionsUp: {
+                    selectable: true,
+                    maxHeight: "1000px",
+                    layout: "fitColumns",
+                    clipboard: true,
+                    clipboardPasteAction: "replace",
+                    columns: [
+                        {title: "Main Addresses", field: "ad1", widthGrow: 1},
+                        {title: "Comparison Addresses", field: "ad2", widthGrow: 1}
+                    ],
+                },
                 options: {
                     maxHeight: "1000px",
                     layout: "fitColumns",
@@ -192,8 +213,9 @@
                         {title: "Comparison Addresses", field: "ad2", widthGrow: 1}
                     ],
                 },
-                chart_title: 'Your title goes here',
-                chart_source: 'Your source goes here',
+                chart_title: 'Number of locations within a range of x-x minutes',
+                chart_title_2: 'Cumulative number of locations within a range of x-x minutes',
+                chart_source: 'Range (Mins)',
                 chart_data: [],
                 chart_data_2: [],
                 chart_config: {
@@ -203,34 +225,13 @@
                         yTicks: 3
                     },
                     color: {
-                        default: '#222f3e',
-                        current: '#41B882'
+                        current: '#172b4d',
+                        default: '#17a2b8'
                     }
                 }
             }
         },
         methods: {
-            async createMap() {
-                try {
-                    const google = await gmapsInit();
-                    const geocoder = new google.maps.Geocoder();
-                    const map = new google.maps.Map(document.getElementById('gmap'));
-                    const bounds = new google.maps.LatLngBounds();
-                    for (let i = 0; i < this.tdata.length; i++) {
-                        let loc = new google.maps.LatLng(this.tdata[i]['lat'], this.tdata[i]['lon'])
-                        let marker = new google.maps.Marker({
-                            position: loc,
-                            map: map
-                        });
-                        bounds.extend(loc);
-                    }
-                    map.fitBounds(bounds);
-                    map.panToBounds(bounds);
-                } catch (error) {
-                    console.error(error);
-                }
-
-            },
             submitFile() {
                 if (this.ufile.size < 10 * 1024 * 1024) {
                     var vm = this
@@ -245,19 +246,19 @@
                     alert("File size must be smaller than 10MB")
                 }
             },
-            printData(data) {
-                // this.convertToTable(data)
-                console.log(data)
-            },
             convertToTable(data) {
                 let newTableData = [];
                 for (let i = 0; i < data.length; i++) {
                     if (data[i][0] !== "") {
-                        newTableData.push({id: this.tdata.length, search: data[i][0], lat: "", lon: ""});
+                        newTableData.push({id: this.tdataup.length, ad1: data[i][0], ad2: data[i][1]});
                     }
                 }
-                this.tdata = newTableData;
+                this.tdataup = newTableData;
+                this.toggleUpData();
 
+            },
+            printData(data) {
+                console.log(data)
             },
 
             async parseFile(file, callBack) {
@@ -271,11 +272,18 @@
                     }
                 })
             },
-
+            convertMinsToHrsMins(mins) {
+                let h = Math.floor(mins / 60);
+                let m = Math.floor(mins) % 60;
+                h = h < 10 ? '0' + h : h;
+                m = m < 10 ? '0' + m : m;
+                return `${h}:${m}`;
+            },
 
             download() {
-                var csv = Papa.unparse(this.tdata)
-                let filename = "geo_results.csv";
+                let csv = Papa.unparse(this.fileData)
+                console.log(csv)
+                let filename = "drive_time_results.csv";
                 let blob = new Blob([csv], {
                     type: "text/plain;charset=utf-8"
                 });
@@ -297,63 +305,76 @@
                 }());
                 saveData(blob, filename);
             },
-
-            async unParseFile(file, callBack) {
-                Papa.unparse(file, {
-                    complete: function (results) {
-                        callBack(results.data);
-                    }
-                })
-            },
-
             async get_drivetime_data() {
                 this.dta = await restapi.get_all_data(this.update_data)
             },
-
             update_data(data) {
                 this.adt = data.mean_tot
                 this.acl = data.min_loc_tot
                 this.dta = data
                 this.showCharts = true
                 this.componentKey += 1;
-                console.log(JSON.parse(this.dta.intervals))
+                this.componentKey_2 += 1;
+                this.fileData = JSON.parse(data.data)
+                console.log(this.fileData)
+                let newData = []
+                for (let key in this.fileData) {
+                    const newRow = {...this.fileData[key], location: key,}
+                    newData.push(newRow)
+                }
+                this.fileData = newData
                 this.chart_data = this.convert_to_d3(JSON.parse(this.dta.intervals))
                 this.chart_data_2 = this.convert_to_d3(JSON.parse(this.dta.cum_intervals))
 
-
-            },
+            }
+            ,
             convert_to_d3(data) {
                 let workAsArray = []; // This will be the resulting array
                 for (var key in data) {
                     var entry = {value: data[key], range: key}; // This will be each of the three graded things
-                    // entry.id = key;
                     workAsArray.push(entry)
                 }
-                console.log(workAsArray)
                 return workAsArray
-            },
+            }
+            ,
+
             async post_data() {
                 const tabulatorInstance = this.$refs.tabulator.getInstance();
                 this.tdata = tabulatorInstance.getData()
                 this.dta = await restapi.dt_post(this.tdata, this.update_data)
+            }
+            ,
+            toggleTask() {
+                this.showTask = !this.showTask
+            }
+            ,
 
-
-                // console.log(tabulatorInstance.getData())
-                // console.log(this.tdata)
-            },
-            toggleCharts() {
-                this.showCharts = !this.showCharts
-            },
+            toggleUpData() {
+                this.showUpTable = true
+            }
+            ,
 
             startTask() {
-                restapi.start_test(this.update_progress)
-            },
+                const tabs = this.$refs.tabs;
+                const acttab = tabs.activeTabIndex;
+                this.toggleTask()
+                if (acttab == 0){
+                    const tabledata = this.tdataup
+                    restapi.start_task(tabledata, this.update_progress)
+                } else {
+                    const tabulatorInstance = this.$refs.tabulator.getInstance();
+                    const tabledata = tabulatorInstance.getData()
+                    restapi.start_task(tabledata, this.update_progress)
+                }
+            }
+            ,
 
             update_progress(task_id) {
                 this.polling = setInterval(() => {
                     restapi.update_status(task_id, this.set_update_prg)
                 }, 1000)
-            },
+            }
+            ,
 
             set_update_prg(data) {
                 if (data.state === 'FINISHED') {
@@ -369,13 +390,24 @@
                         this.task_label = "Task Running"
                         this.total = data.total
                     }
-                    this.prg_val = parseInt((data.iter/this.total*100).toFixed(0))
+                    this.prg_val = parseInt((data.iter / this.total * 100).toFixed(0))
                 }
+            }
+            ,
+            delete_row() {
+                const tabulatorInstance = this.$refs.tabulatorup.getInstance();
+                const selectedRows = tabulatorInstance.getSelectedRows(); //get array of currently selected row components.
+                selectedRows.forEach(element =>
+                    element.delete()
+                );
+                this.tdataup = tabulatorInstance.getData()
+
             },
         },
         beforeDestroy() {
             clearInterval(this.polling)
-        },
+        }
+        ,
         created() {
             vm.component = this
         }

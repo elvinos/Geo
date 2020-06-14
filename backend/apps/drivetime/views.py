@@ -50,15 +50,6 @@ class DriveTimeViewSet(viewsets.ViewSet):
         serializer = serializers.DriveTimeSerializer()
         return Response(serializer.data)
 
-    # @action(methods=['GET'], detail=False)
-    # def get(self, request):
-    #     # ad1 = request.GET['ad1']
-    #     ad2 = "144B Union Street, London, SE10LH"
-    #     #         ad2 = request.GET['ad2']
-    #     response = GoogleMapsTools().driving_distance(ad1, ad2)
-    #     #         response = GoogleMapsTools().driving_distance("777 Brockton Avenue, Abington MA 2351","30 Memorial Drive, Avon MA 2322")
-    #     return (JsonResponse(response, safe=False))
-
     @action(methods=['GET'], detail=False)
     def get_drivetime(self, request):
         coords_ar_1 = [['-71.3634724', '42.6159775'], ['-72.5737841411505', '42.1723059'],
@@ -81,15 +72,10 @@ class DriveTimeViewSet(viewsets.ViewSet):
 
     @action(methods=['post'], detail=False)
     def dt_post(self, request):
-        ad1, ad2 = convert_json_table(request.data)
         print(request.data)
-        print(ad1)
-        print(ad2)
-        df = compare_driving_distance(ad1, ad2).delay()
-        dta = DriveTimeAnalysis(df)
-        results = dta.run_full_analysis(1000)
-        # print(results)
-        return Response(json.loads(results))
+        ad1, ad2 = convert_json_table(request.data)
+        response = self.run_function(request, compare_driving_distance, ad1, ad2)
+        return Response(response)
 
     def run_function(self, request, function, *args):
         if 'job' in request.GET:

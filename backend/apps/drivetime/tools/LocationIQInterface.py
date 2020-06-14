@@ -27,7 +27,7 @@ class LocationIQInterface:
             self.api_instance = locationiq.DirectionsApi(api_client)
 
     @sleep_and_retry
-    @limits(calls=2, period=2)
+    @limits(calls=2, period=1)
     def get_distance_duration(self, coords1=['-72.5737841411505','42.1723059'], coords2=['-70.9682506139195','42.55432235']):
         """Requires two pairs of coordinates: {longitude},{latitude}
            Outputs the fastest drive time and distance in seconds and m
@@ -47,7 +47,7 @@ class LocationIQInterface:
 #             overview = 'simplified' # str | Add overview geometry either full, simplified according to highest zoom level it could be display on, or not at all. [ simplified (default), full, false ] (optional) (default to '"simplified"')
 #             continue_straight = 'default' # str | Forces the route to keep going straight at waypoints constraining uturns there even if it would be faster. Default value depends on the profile [ default (default), true, false ] (optional) (default to '"default"')
 
-            api_response = self.api_instance.directions(coordinates,annotations='false',overview = 'simplified')
+            api_response = self.api_instance.directions(coordinates, annotations='false',overview = 'simplified')
             distance = api_response.routes[0].distance
             duration = api_response.routes[0].duration
             logger.info('Driving Time: %s' % duration)
