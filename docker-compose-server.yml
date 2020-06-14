@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  backend: &django
+  backend:
     image: elvinos/geo:geo-backend
     depends_on:
       - postgres
@@ -53,7 +53,7 @@ services:
       - backend_net
 
   celeryworker:
-    <<: *django
+    image: elvinos/geo:geo-backend
     working_dir: /backend
     depends_on:
       - redis
@@ -64,7 +64,7 @@ services:
       - backend_net
 
   celerybeat:
-    <<: *django
+    image: elvinos/geo:geo-backend
     working_dir: /backend
     depends_on:
       - redis
@@ -75,7 +75,7 @@ services:
       - backend_net
 
   flower:
-    <<: *django
+    image: elvinos/geo:geo-backend
     working_dir: /backend
     ports:
       - "5555:5555"
