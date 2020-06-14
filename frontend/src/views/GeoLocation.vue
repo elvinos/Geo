@@ -1,7 +1,7 @@
 <template>
     <div class="profile-page">
         <section class="section-profile-cover section-shaped my-0">
-            <div class="shape shape-style-1 shape-primary shape-skew alpha-4">
+            <div class="shape shape-style-1 shape-dark shape-skew alpha-4">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -107,7 +107,7 @@
                 dReady: false,
                 tdata: tableData,
                 options: {
-                    // height: "400px",
+                    maxHeight: "1000px",
                     layout: "fitColumns",
                     columns: [
                         {title: "Search Address", field: "search", editor: true, widthGrow: 2},

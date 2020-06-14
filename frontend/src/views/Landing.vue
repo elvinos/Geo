@@ -46,7 +46,7 @@
                                         <badge type="primary" rounded>Maps</badge>
                                     </div>
                                     <base-button tag="a" href="/geolocation" type="primary" class="mt-4">
-                                        Learn more
+                                        Use
                                     </base-button>
                                 </card>
                             </div>
@@ -54,15 +54,15 @@
                                 <card class="border-0" hover shadow body-classes="py-5">
                                     <icon name="ni ni-istanbul" type="success" rounded class="mb-4">
                                     </icon>
-                                    <h6 class="text-success text-uppercase">Distance Analysis</h6>
+                                    <h6 class="text-success text-uppercase">Drive Time Analysis</h6>
                                     <p class="description mt-3">Understand how far apart different locations are from each other to calculate average competitor distances</p>
                                     <div>
                                         <badge type="success" rounded>business</badge>
                                         <badge type="success" rounded>vision</badge>
                                         <badge type="success" rounded>success</badge>
                                     </div>
-                                    <base-button tag="a" href="#" type="success" class="mt-4">
-                                        Coming Soon
+                                   <base-button tag="a" href="/drivetime" type="primary" class="mt-4">
+                                        Use
                                     </base-button>
                                 </card>
                             </div>
