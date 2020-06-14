@@ -1,5 +1,5 @@
 <template>
-    <section class="section section-shaped section-lg section-full-height my-0">
+    <section class="section section-shaped section-lg my-0">
         <div class="shape shape-style-1 bg-gradient-default">
             <span></span>
             <span></span>
@@ -18,8 +18,24 @@
                           body-classes="px-lg-5 py-lg-5"
                           class="border-0">
                         <template>
+                            <div class="text-muted text-center mb-3">
+                                <small>Sign in with</small>
+                            </div>
+                            <div class="btn-wrapper text-center">
+                                <base-button type="neutral">
+                                    <img slot="icon" src="img/icons/common/github.svg">
+                                    Github
+                                </base-button>
+
+                                <base-button type="neutral">
+                                    <img slot="icon" src="img/icons/common/google.svg">
+                                    Google
+                                </base-button>
+                            </div>
+                        </template>
+                        <template>
                             <div class="text-center text-muted mb-4">
-                                <small>Sign in with an OC&C email address</small>
+                                <small>Or sign in with credentials</small>
                             </div>
                             <form role="form">
                                 <base-input alternative
