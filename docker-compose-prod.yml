@@ -95,7 +95,7 @@ services:
       - "5555:5555"
     command: /start-flower
     networks:
-      - backend_net˚
+      - backend_net
 
 volumes:
   postgres_data:
