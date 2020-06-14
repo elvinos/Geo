@@ -54,7 +54,6 @@ services:
 
   celeryworker:
     <<: *django
-    image: local_celeryworker
     working_dir: /backend
     depends_on:
       - redis
@@ -66,7 +65,6 @@ services:
 
   celerybeat:
     <<: *django
-    image: local_celerybeat
     working_dir: /backend
     depends_on:
       - redis
@@ -78,7 +76,6 @@ services:
 
   flower:
     <<: *django
-    image: local_flower
     working_dir: /backend
     ports:
       - "5555:5555"
