@@ -22,7 +22,7 @@
                                 <h1 class="display-3  text-white">Competitor Location Analysis
                                     <span>For Strategy Consultants</span>
                                 </h1>
-                                <p class="lead  text-white">This site is packed with mulitple tools to aid in understanding client/ competitor locations at pace</p>
+                                <p class="lead  text-white">A series of online tools to aid the understanding client/ competitor location data at pace</p>
                                 </div>
                             </div>
                         </div>
@@ -57,9 +57,8 @@
                                     <h6 class="text-success text-uppercase">Drive Time Analysis</h6>
                                     <p class="description mt-3">Understand how far apart different locations are from each other to calculate average competitor distances</p>
                                     <div>
-                                        <badge type="success" rounded>business</badge>
-                                        <badge type="success" rounded>vision</badge>
-                                        <badge type="success" rounded>success</badge>
+                                        <badge type="success" rounded>Coordinates</badge>
+                                        <badge type="success" rounded>Analysis</badge>
                                     </div>
                                    <base-button tag="a" href="/drivetime" type="primary" class="mt-4">
                                         Use
