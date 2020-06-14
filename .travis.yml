@@ -7,11 +7,11 @@ env:
   - secure: YeNa4WTXkN8YKOxO7xWl2SqanzeRE/SMYFWK0xA+FCmw0Ua3Cvq81Sg0KcG3RMvcDDXYk95OklbUZ/3ys10gnhzW1xa6NTPAYvaFZygXWNBk5XXr4OKO3BQ5zyv8xmZKjKLIMmbZKrtp3+nS9quWBlgSLdm6Gbfcgnarqy+VOapyK5Tw4ft94slcmaUWvEEwB9fOUap9H6RdgCuKwuUFo2SWzBXpOoLLz9O+f7xFK61XTLeQDpXk4d5622YtKsiHV4i4BzGLXJ20QQq2q15mAyXZYHavFPzFKoTdnzcOKLuBF/p7Ta15Qdc8z+SkqVljyaz9vNJixkL72+DJaEKPq0ktFJnzVbRppAe7RzATXcybOVnXTQDU7+lSGNVYlQrEymulg+8sFUmpwHHw0FqnLFv1R+uyf8FVWDLFbjlE2IY2r5UI/vWya9GM65BCG5FXZ283o/oGKqiym2vLT7+KVMhaMIO57UUE1DEzSLy8aIfpj2II29DPO+S6+jPNWrO/vuIOWEtgE7pOhkg17DUGVFY2616HkJakRoSCyMnDm7LwsZHzjSwgv9Om3SxZqUWRkpwXZ6xFw9ZjGGNSG6aVrLKsBwM1yfxkgBROsexgGlkgu2gKGlIeDb0iBqKGZB3PFq1vhtb19DIEZEGhbnnHMZx2j8aoNPh68tc7MEvLNCY=
 jobs:
   stages:
-    - build docker images and push nginx to repo
+    - build
     - deploy
   include:
   - stage:
-    - name: build docker images and push nginx to repo
+    - name: build
     script:
     - openssl aes-256-cbc -K $encrypted_3c84dcdc6bbe_key -iv $encrypted_3c84dcdc6bbe_iv -in .env.enc -out .env -d
     - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
