@@ -22,7 +22,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     labels:
       - "traefik.enable=true"
-      - 'traefik.frontend.rule=Host:www.ec2-3-17-71-200.us-east-2.compute.amazonaws.com'
+      - 'traefik.frontend.rule=Host:www.ec2-18-188-120-148.us-east-2.compute.amazonaws.com'
       - "traefik.port=80"
 
   traefik:

@@ -26,7 +26,7 @@ certificatesResolvers:
 http:
   routers:
     web-router:
-      rule: "Host(`ec2-3-17-71-200.us-east-2.compute.amazonaws.com`) || Host(`www.http://ec2-3-17-71-200.us-east-2.compute.amazonaws.com`)"
+      rule: "Host(`ec2-18-188-120-148.us-east-2.compute.amazonaws.com`) || Host(`www.ec2-18-188-120-148.us-east-2.compute.amazonaws.com`)"
       
       entryPoints:
         - web
@@ -36,7 +36,7 @@ http:
       service: django
 
     web-secure-router:
-      rule: "Host(`ec2-3-17-71-200.us-east-2.compute.amazonaws.com`) || Host(`www.http://ec2-3-17-71-200.us-east-2.compute.amazonaws.com`)"
+      rule: "Host(`ec2-18-188-120-148.us-east-2.compute.amazonaws.com`) || Host(`www.ec2-18-188-120-148.us-east-2.compute.amazonaws.com`)"
       
       entryPoints:
         - web-secure
@@ -48,7 +48,7 @@ http:
         certResolver: letsencrypt
 
     flower-secure-router:
-      rule: "Host(`ec2-3-17-71-200.us-east-2.compute.amazonaws.com`) || Host(`www.http://ec2-3-17-71-200.us-east-2.compute.amazonaws.com`)"
+      rule: "Host(`ec2-18-188-120-148.us-east-2.compute.amazonaws.com`) || Host(`www.ec2-18-188-120-148.us-east-2.compute.amazonaws.com`)"
       entryPoints:
         - flower
       service: flower

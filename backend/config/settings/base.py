@@ -67,7 +67,7 @@ MIDDLEWARE = [
 ]
 
 # DOMAINS
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '3.17.71.200', 'ec2-3-17-71-200.us-east-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '3.17.71.200', 'ec2-18-188-120-148.us-east-2.compute.amazonaws.com']
 
 # ALLOWED_HOSTS = ['localhost']
 # ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
