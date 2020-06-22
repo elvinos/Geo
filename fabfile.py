@@ -96,9 +96,13 @@ def deploy(c):
     os.system('docker-compose -f docker-compose-prod.yml build')
     os.system('docker tag 0.0.0.0:5000/geo-nginx elvinos/geo:geo-nginx')
     os.system('docker tag 0.0.0.0:5000/geo-backend elvinos/geo:geo-backend')
+    os.system('docker tag 0.0.0.0:5000/geo-traefik elvinos/geo:geo-traefik')
+    os.system('docker tag 0.0.0.0:5000/geo-postgres elvinos/geo:geo-postgres')
     os.system('docker image ls')
     os.system('docker push elvinos/geo:geo-nginx')
     os.system('docker push elvinos/geo:geo-backend')
+    os.system('docker push elvinos/geo:geo-traefik')
+    os.system('docker push elvinos/geo:geo-postgres')
     with host.cd(APP_NAME):
         host.run('git pull')
         host.run('git checkout master')
