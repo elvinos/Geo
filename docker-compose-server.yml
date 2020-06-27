@@ -11,6 +11,8 @@ services:
     entrypoint: /entrypoint.sh
     restart: on-failure
     env_file: .env
+    networks:
+      - traefik-network
 
   nginx:
     image: elvinos/geo:geo-nginx
@@ -24,6 +26,9 @@ services:
       - "traefik.enable=true"
       - 'traefik.frontend.rule=Host:www.ec2-18-188-120-148.us-east-2.compute.amazonaws.com'
       - "traefik.port=80"
+      - traefik.docker.network=traefik-network
+    networks:
+      - traefik-network
 
   traefik:
     image: elvinos/geo:geo-traefik
@@ -35,6 +40,8 @@ services:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
       - "0.0.0.0:5555:5555"
+    networks:
+      traefik-network
 
   postgres:
     image: elvinos/geo:geo-postgres
@@ -42,29 +49,43 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - backups:/var/lib/postgresql/backups/
     env_file: .env
+    networks:
+      traefik-network
 
   redis:
     image: redis:latest
     volumes:
       - redisdata:/data
+    networks:
+      traefik-network
 
   celeryworker:
     <<: *backend
     image: celeryworker
     command: /start-celeryworker
+    networks:
+      traefik-network
 
   celerybeat:
     <<: *backend
     image: celerybeat
     command: /start-celerybeat
+    networks:
+      traefik-network
 
   flower:
     <<: *backend
     image: flower
     command: /start-flower
+    networks:
+      traefik-network
 
 volumes:
   postgres_data: {}
   backups: {}
   redisdata: {}
   traefik: {}
+
+  networks:
+    traefik-network:
+      external: true
