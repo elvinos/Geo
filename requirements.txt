@@ -1,6 +1,6 @@
 farbic2
 python-dotenv
-Django~=3.0.7
+Django~=3.1.6
 requests~=2.23.0
 djangorestframework~=3.11.0
 pandas~=1.0.3
